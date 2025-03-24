@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> pharmacy | home </title>
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="fonts/fonts.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.rtl.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container text-center">
+            <div class="header-logo header-right">
+                <img src="img/logo.svg">
+                <div class="site-name">
+                    <h2 class="mytext-large mytext-bold">ONLINE<br>PHARMACY</h2>
+                </div>
+            </div>
+            <div class="header-search header-center">
+                <input class="search-input" name="searchbox" placeholder="جست و جو">
+                <button class="search-button"><i class="bi bi-search"></i></button>
+            </div>
+            <div class="d-grid gap-2 d-none d-md-flex">
+                <a class="button btn btn-primary sign" href="#"> <i class="bi bi-box-arrow-in-left"></i> <span
+                        style="margin-left: 2px;">|</span> ورود / ثبت نام </a>
+                <a class="button btn btn-outline-primary" href="#"> <i class="bi bi-bag"></i> <span
+                        style="margin-left: 2px;">|</span> سبد خرید </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navbar -->
+    <nav>
+        <div class="container">
+            <div class="navbar navbar-expand-lg navbar-light">
+                <button class="navbar-toggler" type="button" id="hamburger-button">
+                    <span class="hamburger-icon"><i class="bi bi-list"></i></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto ps-lg-0" style="padding-left: 0.15rem">
+                        <li class="dropdown position-static">
+                            <a data-mdb-dropdown-init class="nav-item " href="#" id="navbarDropdown" role="button"
+                                data-mdb-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-list"></i>
+                                محصولات
+                            </a>
+                            <div class="dropdown-menu w-100 mt-0" aria-labelledby="navbarDropdown" style="
+                                          border-top-left-radius: 0;
+                                          border-top-right-radius: 0;
+                                        ">
+                                <div class="container">
+                                    <div class="row my-4">
+                                        <div class="col-md-4 col-lg-3 mb-3 mb-lg-0">
+                                            <div class="list-group list-group-flush">
+                                                <a href=""
+                                                    class="list-group-item dropdown list-group-item-action">آرایشی
+                                                    بهداشتی</a>
+                                                <a href="" class="list-item list-group-item-action"> زیر منو 1</a>
+                                                <a href="" class="list-item list-group-item-action"> زیر منو 2</a>
+                                                <a href="" class="list-item list-group-item-action"> زیر منو 3</a>
+                                                <a href="" class="list-item list-group-item-action"> زیر منو 4</a>
+                                                <a href="" class="list-item list-group-item-action"> زیر منو 5</a>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-lg-3 mb-3 mb-lg-0">
+                                            <div class="list-group list-group-flush">
+                                                <a href="" class="list-group-item list-group-item-action"> تقویت
+                                                    پوست و مو </a>
+                                                <a href="" class="list-item list-group-item-action"> زیر منو 1</a>
+                                                <a href="" class="list-item list-group-item-action"> زیر منو 2</a>
+                                                <a href="" class="list-item list-group-item-action"> زیر منو 3</a>
+                                                <a href="" class="list-item list-group-item-action"> زیر منو 4</a>
+                                                <a href="" class="list-item list-group-item-action"> زیر منو 5</a>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-lg-3 mb-3 mb-lg-0">
+                                            <div class="list-group list-group-flush">
+                                                <a href="" class="list-group-item list-group-item-action">مکمل
+                                                    کودکان </a>
+                                                <a href="" class="list-item list-group-item-action"> زیر منو 1</a>
+                                                <a href="" class="list-item list-group-item-action"> زیر منو 2</a>
+                                                <a href="" class="list-item list-group-item-action"> زیر منو 3</a>
+                                                <a href="" class="list-item list-group-item-action"> زیر منو 4</a>
+                                                <a href="" class="list-item list-group-item-action"> زیر منو 5</a>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-lg-3 mb-3 mb-lg-0">
+                                            <div class="list-group list-group-flush">
+                                                <a href="" class="list-group-item list-group-item-action"> مکمل و
+                                                    ویتامین بزرگسالان </a>
+                                                <a href="" class="list-item list-group-item-action"> زیر منو 1</a>
+                                                <a href="" class="list-item list-group-item-action"> زیر منو 2</a>
+                                                <a href="" class="list-item list-group-item-action"> زیر منو 3</a>
+                                                <a href="" class="list-item list-group-item-action"> زیر منو 4</a>
+                                                <a href="" class="list-item list-group-item-action"> زیر منو 5</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item"><a href="#">
+                                <i class="bi bi-bookmark"></i>وبلاگ
+                            </a></li>
+                        <li class="nav-item"><a href="#">
+                                <i class="bi bi-file-earmark-text"></i>استعلام نسخه
+                            </a></li>
+                        <li class="nav-item"><a href="#">
+                                <i class="bi bi-info-square"></i>مشخصات داروخانه
+                            </a></li>
+                    </ul>
+
+                    <ul class="info-box">
+                        <li class="info-box-item">09154326098<i class="bi bi-phone"></i></li>
+                        <li class="info-box-item">051-32456657<i class="bi bi-telephone"></i></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="breadcrumb-area" style="background-color: transparent !important;" data-bs-bg="img/bg/14.jpg">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb-inner">
+                        <div class="breadcrumb-list">
+                            <ul style="color: rgb(13, 13, 13) !important;">
+                                <li><a href="index.php"><i class="bi bi-house"></i> خانه</a></li>
+                                <li style="color: rgb(13, 13, 13) !important;"> > محصولات تقویت مو > شامپو فلان </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container mt-5 single-product">
+        <div class="row">
+            <div class="col-md-6">
+                <img src="img/large-cat1.png" alt="محصول" class="single-product-img">
+            </div>
+            <div class="col-md-6">
+                <h2 class="product-title">تب سنج دیجیتال</h2>
+                <span class="rating">⭐⭐⭐⭐⭐</span>
+                <p class="price">قیمت: ۴۰,۰۰۰ تومان</p>
+                <p class="product-description">
+                    این تب سنج دیجیتال، دقیق و بسیار آسان برای استفاده است. با خواندن سریع و نتیجه‌گیری دقیق، این محصول
+                    برای استفاده خانگی و حرفه‌ای مناسب است.
+                </p>
+                <a class="button btn btn-primary" href="#"> <i class="bi bi-bag"></i> <span
+                        style="margin-left: 2px;">|</span> افزودن به سبد خرید </a>
+            </div>
+        </div>
+
+        <hr class="my-4">
+        <div class="row">
+            <div class="col">
+                <h4>توضیحات محصول</h4>
+                <p class="product-description">
+                    لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از
+                    طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که
+                    لازم است، و برای شرایط فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف
+                    بهبود ابزارهای کاربردی می باشد، کتابهای زیادی در شصت و سه درصد گذشته حال و
+                    آینده، شناخت فراوان جامعه و متخصصان را می طلبد، تا با نرم افزارها شناخت
+                    بیشتری را برای طراحان رایانه ای علی الخصوص طراحان خلاقی، و فرهنگ پیشرو در
+                    زبان فارسی ایجاد کرد، در این صورت می توان امید داشت که تمام و دشواری موجود
+                    در ارائه راهکارها، و شرایط سخت تایپ به پایان رسد و زمان مورد نیاز شامل
+                    حروفچینی دستاوردهای اصلی، و جوابگوی سوالات پیوسته اهل دنیای موجود طراحی
+                    اساسا مورد استفاده قرار گیرد.
+                </p>
+            </div>
+            <div class="col">
+
+                <h4>ویژگی‌ها</h4>
+                <ul>
+                    <li>سنجش سریع دما</li>
+                    <li>صفحه نمایش بزرگ و خوانا</li>
+                    <li>خاموشی خودکار بعد از استفاده</li>
+                    <li>قابل استفاده برای بزرگسالان و کودکان</li>
+                </ul>
+            </div>
+        </div>
+        
+
+
+        <h4 style="margin-top: 4em;">نقد و بررسی‌ها (2)</h4>
+        <div class="row">
+            <div class="col">
+                <div class="border p-3 mb-3 single-product-review" style="border-radius: 8px;">
+                    <h6>کاربر ۱</h6>
+                    <p> لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از
+                        </p>
+                    <small>تاریخ: ۲۰۲۵/۰۲/۱۷</small>
+                </div>
+            </div>
+            <div class="col">
+                <div class="border p-3 mb-3 single-product-review" style="border-radius: 8px;">
+                    <h6>کاربر ۲</h6>
+                    <p> لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از
+                        طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که
+                        </p>/p>
+                    <small>تاریخ: ۲۰۲۵/۰۲/۱۶</small>
+                </div>
+            </div>
+        </div>
+        
+        
+
+        <h4 style="margin-top: 4em; margin-bottom: 1em;">محصولات مشابه</h4>
+        <div class="row">
+
+            <div class="col-md-2 mb-3 product-card shop-card">
+                <div class="card carousel-card">
+                    <img src="img/p7.png" class="card-img-top" alt="محصول 1">
+                    <div class="card-body">
+                        <p class="card-title"> شامپو فوم پالمنیکس پلاس</p>
+                        <p class="card-price">16,000 تومان</p>
+                        <button class="btn button button2 btn-primary add-for-shop"><i
+                                class="bi bi-bag-plus"></i></button>
+                        <button class="btn button button2 btn-primary add-to-favorite"><i
+                                class="bi bi-heart"></i></button>
+                        <button class="btn button button2 btn-primary view-product"><i
+                                class="bi bi-eye"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2 mb-3 product-card shop-card">
+                <div class="card carousel-card">
+                    <img src="img/p7.png" class="card-img-top" alt="محصول 1">
+                    <div class="card-body">
+                        <p class="card-title"> شامپو فوم پالمنیکس پلاس</p>
+                        <p class="card-price">16,000 تومان</p>
+                        <button class="btn button button2 btn-primary add-for-shop"><i
+                                class="bi bi-bag-plus"></i></button>
+                        <button class="btn button button2 btn-primary add-to-favorite"><i
+                                class="bi bi-heart"></i></button>
+                        <button class="btn button button2 btn-primary view-product"><i
+                                class="bi bi-eye"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 mb-3 product-card shop-card">
+                <div class="card carousel-card">
+                    <img src="img/p7.png" class="card-img-top" alt="محصول 1">
+                    <div class="card-body">
+                        <p class="card-title"> شامپو فوم پالمنیکس پلاس</p>
+                        <p class="card-price">16,000 تومان</p>
+                        <button class="btn button button2 btn-primary add-for-shop"><i
+                                class="bi bi-bag-plus"></i></button>
+                        <button class="btn button button2 btn-primary add-to-favorite"><i
+                                class="bi bi-heart"></i></button>
+                        <button class="btn button button2 btn-primary view-product"><i
+                                class="bi bi-eye"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 mb-3 product-card shop-card">
+                <div class="card carousel-card">
+                    <img src="img/p7.png" class="card-img-top" alt="محصول 1">
+                    <div class="card-body">
+                        <p class="card-title"> شامپو فوم پالمنیکس پلاس</p>
+                        <p class="card-price">16,000 تومان</p>
+                        <button class="btn button button2 btn-primary add-for-shop"><i
+                                class="bi bi-bag-plus"></i></button>
+                        <button class="btn button button2 btn-primary add-to-favorite"><i
+                                class="bi bi-heart"></i></button>
+                        <button class="btn button button2 btn-primary view-product"><i
+                                class="bi bi-eye"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 mb-3 product-card shop-card">
+                <div class="card carousel-card">
+                    <img src="img/p7.png" class="card-img-top" alt="محصول 1">
+                    <div class="card-body">
+                        <p class="card-title"> شامپو فوم پالمنیکس پلاس</p>
+                        <p class="card-price">16,000 تومان</p>
+                        <button class="btn button button2 btn-primary add-for-shop"><i
+                                class="bi bi-bag-plus"></i></button>
+                        <button class="btn button button2 btn-primary add-to-favorite"><i
+                                class="bi bi-heart"></i></button>
+                        <button class="btn button button2 btn-primary view-product"><i
+                                class="bi bi-eye"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    </section>
+    <footer>
+        <div class="container">
+            <div class="row">
+
+                <div class="col-md-4 gap-4">
+                    <div class="footer-logo header-right">
+                        <img src="img/logo.svg">
+                        <div class="site-name">
+                            <h2 class="mytext-large mytext-bold">ONLINE<br>PHARMACY</h2>
+                        </div>
+                    </div>
+                    <p class="footer-about">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از
+                        طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای
+                        شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد</p>
+                </div>
+                <div class="col-md-4 gap-4">
+                    <h5 class="footer-quick-access">لینک های دسترسی سریع</h5>
+                    <ul class="list-unstyled">
+                        <li><a class="quick-access-link" href="#">>> خانه </a></li>
+                        <li><a class="quick-access-link" href="#">>> درباره ما</a></li>
+                        <li><a class="quick-access-link" href="#">>> محصولات</a></li>
+                        <li><a class="quick-access-link" href="#">>> تماس با ما </a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-4 gap-4">
+                    <h5>اطلاعات تماس</h5>
+                    <p>تلفن: ۰۱۲۳۴۵۶۷۸۹</p>
+                    <p>ایمیل: ddwqqr@example.com</p>
+                    <p>آدرس: پرستار1</p>
+                    <img src="img/enamad.png" alt="مجوز 1" width="50">
+                    <img src="img/salamat.png" alt="مجوز 2" width="50">
+
+                </div>
+
+
+            </div>
+
+        </div>
+    </footer>
+
+
+    <div class="text-center p-3" style="background-color: #e9ecef;">
+        <p>&copy; 2025 کلیه حقوق محفوظ است. | طراحی شده توسط hoda</p>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,86 @@
+@import url(iransans.css); /* لینک فایلی که وظیفه بارگذاری فونت ها را برعهده دارد */
+body {
+	font-family: IRANSansX  !important;
+	direction: rtl;
+	background-color: #e9e9e9;
+	margin: 0;
+}
+h1, h2, h3, h4, h5, h6,input, textarea {
+	font-family: IRANSansX !important;
+}
+h1 {
+	font-weight: bold;
+}
+.wrapper {
+	max-width: 900px;
+	margin: 0 auto;
+}
+.ltr {
+	direction: ltr;
+}
+.mytext-right {
+	text-align: right;
+}
+.mytext-center {
+	text-align: center;
+}
+.mytext-left {
+	text-align: left;
+}
+.mytext-small {
+	font-size: 0.8em;
+}
+.mytext-xsmall {
+	font-size: 0.6em;
+}
+.mytext-large {
+	font-size: 1.2em;
+}
+.mytext-xlarge {
+	font-size: 1.4em;
+}
+.mytext-underline {
+	text-decoration:underline;
+}
+
+.mytext-thin {
+	font-weight: 100;
+}
+.mytext-UltraLight {
+	font-weight: 200;
+}
+.mytext-light {
+	font-weight: 300;
+}
+.mytext-regular {
+	font-weight: normal;
+}
+.mytext-medium {
+	font-weight: 500;
+}
+.mytext-demibold {
+	font-weight: 600;
+}
+.mytext-bold {
+	font-weight: bold;
+}
+
+.mytext-extrabold {
+	font-weight: 800;
+}
+.mytext-black {
+	font-weight: 900;
+}
+.mytext-extrablack {
+	font-weight: 950;
+}
+.mytext-heavy {
+	font-weight: 1000;
+}
+
+blockquote {
+	font-weight: 700;
+	padding: 10px;
+	border: 1px dashed #666666;
+}
+
