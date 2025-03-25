@@ -1,3 +1,12 @@
+:root {
+  --color-1: #030209;
+  --color-2: #0D0C3A;
+  --color-3: #1A2569;
+  --color-4: #2A4B95;
+  --color-main: #3C7BBF;
+  --color-6: #5F89DE;
+}
+
 .search-wrapper {
   max-width: 600px;
   margin: 0 auto;
@@ -148,4 +157,114 @@
 
 .login-form-control::placeholder {
   color: rgba(255, 255, 255, 0.7); /* رنگ placeholder */
+}
+
+
+/*side bar*/
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: -250px;
+  height: 100%;
+  background-color: white;
+  box-shadow: -2px 0 5px rgb(0 0 0 / 8%);
+  transition: right 0.3s ease;
+  z-index: 1000;
+  overflow-y: auto;
+  padding-top: 3rem !important;
+  border: none !important;
+  width: 16rem !important;
+}
+.sidebar.active {
+  right: 0; /* Slide in */
+}
+
+.sidebar-item {
+  padding: 15px;
+  transition: all ease-in-out .2s;
+  border-radius: 8px !important;
+  margin-bottom: .5em;
+
+}
+.sidebar-item:hover{
+  cursor: pointer;
+  background-color: #f8f9fa;
+}
+.sidebar-item:last-child {
+  margin-top: .5em;
+  background-color: #dc3545;
+  color: white;
+}
+.sidebar-item:last-child:hover{
+  background-color: #c31c2d;
+}
+.sidebar-item i{
+  margin-left: 1em;
+  font-size: large;
+}
+.profile-pic {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+  margin-left: 1em;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 1em;
+  transition: all .2s ease-in-out ;
+}
+.sidebar-header:hover{
+  cursor: pointer;
+  background-color: var(--color-6);
+  color: white;
+}
+
+.close-sidebar {
+  cursor: pointer;
+  padding: 5px 12px;
+  padding-top: 8px;
+  color: #930404;
+  border: none;
+  background: transparent;
+  border-radius: 5px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin-left: auto;
+  font-size: 1.5em;
+}
+body.sidebar-active .main-header {
+  margin-right: 16rem;
+}
+.body-container{
+  padding-right: 10rem !important;
+}
+
+
+
+   /* تغییر رنگ پس‌زمینه‌ی tooltip */
+.tooltip {
+  background-color: transparent; /* تغییر رنگ پس‌زمینه */
+  border-radius: 10px; /* گرد کردن گوشه‌ها */
+  padding: 10px;
+}
+
+/* تغییر رنگ و اندازه متن داخل tooltip */
+.tooltip-inner {
+  color: #fff; /* رنگ متن */
+  font-size: 14px;
+  font-weight: bold; /* فونت بولد */
+  text-align: center;
+  background-color: var(--color-2) !important;
+}
+
+/* تغییر استایل پیکان (arrow)*/
+.tooltip-arrow {
+  border-color: var(--color-2) !important; /* تغییر رنگ پیکان */
 }
