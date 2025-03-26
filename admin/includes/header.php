@@ -14,14 +14,11 @@
     <link href="style/admin.css" rel="stylesheet">
     <link href="style/admin.min.css" rel="stylesheet">
     <link href="../fonts/fonts.css" rel="stylesheet">
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.rtl.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
-    <script src="https://kit.fontawesome.com/c0d1944c94.js" crossorigin="anonymous"></script>
 </head>
+
 
 <body id="page-top" dir="rtl" class="sidebar-active">
 <!--navbar-->
@@ -67,7 +64,7 @@
 </nav>
 
 <!-- Sidebar -->
-<div class="sidebar active" id="sidebar" style="width: 16rem !important;"> <!-- added active class for default open -->
+<div class="sidebar active d-flex flex-column" id="sidebar" style="width: 16rem !important;"> <!-- added active class for default open -->
     <button class="close-sidebar" id="close-sidebar"><i class="fa-solid fa-xmark"></i></button>
     <div class="sidebar-header" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true" title="ویرایش پروفایل">
         <img src="img/user.png" alt="Profile" class="profile-pic">
@@ -77,24 +74,54 @@
             ?>
         </span>
     </div>
-    <div class="sidebar-item"><i class="fa-solid fa-gauge"></i>داشبورد</div>
-<!--    <div class="sidebar-item dropdown">-->
-<!--        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" aria-expanded="false">-->
-<!--            <i class="fa fa-plus"></i> افزودن-->
-<!--        </a>-->
-<!--        <div class="dropdown-menu">-->
-<!--            <a class="dropdown-item" href="#"><i class="fa-solid fa-list"></i> منو ها </div></a>-->
-<!--            <a class="dropdown-item" href="#">گزینه 2</a>-->
-<!--            <a class="dropdown-item" href="#">گزینه 3</a>-->
-<!--        </div>-->
-<!--    </div-->
-    <div class="sidebar-item"><i class="fa-solid fa-list"></i> منو ها </div>
-    <div class="sidebar-item"><i class="fa-solid fa-file"></i>  صفحات</div>
-    <div class="sidebar-item"><i class="fa-solid fa-bottle-droplet"></i>  دارو ها</div>
-    <div class="sidebar-item"><i class="fa-solid fa-bookmark"></i>  مقالات</div>
-    <div class="sidebar-item"><i class="fa-solid fa-grip"></i>  دسته بندی محصول</div>
-    <div class="sidebar-item"><i class="fa-solid fa-users"></i>  کاربران</div>
-    <div class="sidebar-item"><i class="fa-solid fa-right-from-bracket"></i>  خروج</div>
+    <a class="sidebar-item" href="index.php">
+        <i class="fa-solid fa-gauge"></i>
+        داشبورد
+    </a>
+    <a class="sidebar-item" href="index.php?menus">
+        <i class="fa-solid fa-list"></i>
+        منو ها
+    </a>
+    <a class="sidebar-item" href="index.php?pages">
+        <i class="fa-solid fa-file"></i>
+        صفحات
+    </a>
+    <a class="sidebar-item" href="index.php?products">
+    <i class="fa-solid fa-bottle-droplet"></i>
+        دارو ها
+    </a>
+    <a class="sidebar-item" href="index.php?blogs">
+        <i class="fa-solid fa-bookmark"></i>
+        مقالات
+    </a>
+    <a class="sidebar-item" href="index.php?categories">
+        <i class="fa-solid fa-grip"></i> دسته بندی دارو ها
+    </a>
+    <a class="sidebar-item" href="index.php?page=users">
+        <i class="fa-solid fa-users"></i> کاربران
+    </a>
+    <div class="sidebar-item sidebar-item-more" id="toggleCollapse" data-bs-toggle="collapse" data-bs-target="#collapsemore" aria-expanded="false" aria-controls="collapsemore">
+        <i class="fa-solid fa-list"></i> سایر
+        <i id="collapseIcon" class="fa-solid fa-angle-down"></i>
+    </div>
+    <div class="collapse" id="collapsemore">
+        <div class="card card-body">
+            <a class="sidebar-item" href="index.php?page=createoff">
+                   <i class="fa-solid fa-tag"></i>
+                   ایجاد تخفیف
+            </a>
+            <a class="sidebar-item" href="index.php?page=delivermethod">
+                <i class="fa-solid fa-cart-flatbed-suitcase"></i>
+                شیوه ارسال
+            </a>
+            <a class="sidebar-item" href="index.php?page=paymentmethod" style="background-color: transparent !important; color: #1b1b1b">
+                <i class="fa-solid fa-credit-card"></i>
+                شیوه پرداخت
+            </a>
+        </div>
+    </div>
+    <a href="index.php?logout" class="sidebar-item"><i class="fa-solid fa-right-from-bracket"></i>  خروج</a>
+
 </div>
 
 <script>
@@ -120,13 +147,55 @@
         document.body.classList.remove('sidebar-active'); // Remove layout changes
 
     });
-
     // تعویض `data-bs-toggle` با ویژگی فعال‌کننده Tooltip
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl);
     });
 
+    document.addEventListener("DOMContentLoaded", function() {
+        var collapsemore = document.getElementById('collapsemore');
+        var sidebarItemMore = document.querySelector('.sidebar-item-more');
+
+        sidebarItemMore.addEventListener("click", function() {
+            collapsemore.classList.toggle('show');
+        });
+    });
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const toggleCollapse = document.getElementById('toggleCollapse');
+        const collapseIcon = document.getElementById('collapseIcon');
+        const collapsemore = document.getElementById('collapsemore');
+
+        toggleCollapse.addEventListener("click", function() {
+            // بررسی وضعیت کالاپس برای تغییر آیکون
+            if (collapsemore.classList.contains('show')) {
+                collapseIcon.classList.remove('fa-angle-up');
+                collapseIcon.classList.add('fa-angle-down');
+                collapsemore.classList.remove('show'))
+            } else {
+                collapseIcon.classList.remove('fa-angle-down');
+                collapseIcon.classList.add('fa-angle-up');
+            }
+        });
+
+        // اضافه کردن رویداد برای تغییر آیکون در صورتی که دیگر باز شود
+        collapsemore.addEventListener('shown.bs.collapse', function () {
+            collapseIcon.classList.remove('fa-angle-down');
+            collapseIcon.classList.add('fa-angle-up');
+        });
+
+        // اضافه کردن رویداد برای تغییر آیکون در صورتی که بسته شود
+        collapsemore.addEventListener('hidden.bs.collapse', function () {
+            collapseIcon.classList.remove('fa-angle-up');
+            collapseIcon.classList.add('fa-angle-down');
+        });
+    });
 </script>
 </body>
 

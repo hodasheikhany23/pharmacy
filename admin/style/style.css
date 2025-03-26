@@ -56,8 +56,7 @@ a {
     align-items: center;
     justify-content: space-between;
     padding-bottom: 1em;
-    padding-top: 4em;
-    margin-top: 90px;
+    padding-top: 2em;
 }
 
 .section-title p {
@@ -163,6 +162,9 @@ a {
 
 .button2 i {
     margin: 0 !important;
+}
+.btn-success{
+    background-color: #0f6848;
 }
 .btn-success::after{
     background-color: #04ac50 !important;

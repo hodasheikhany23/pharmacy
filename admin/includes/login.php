@@ -1,17 +1,8 @@
 ﻿<?php
     defined('site') or die('access denied!');
     $errors = [];
-    $link = mysqli_connect("localhost", "root", "", "pharmacy_db");
-
-    function clean_data($value)
-    {
-        $value = trim($value);
-        $value = str_replace('ي', 'ی', $value);
-        $value = strip_tags($value);
-        return $value;
-    }
     if(isset($_POST['submit'])){
-        $result = $link -> query("SELECT * FROM users WHERE u_username = '".addslashes($_POST['username'])."' and u_password = '".$_POST['password']."'and u_is_admin = 1");
+        $result = $link->query("SELECT * FROM users WHERE u_username = '" . addslashes($_POST['username']) . "' AND u_password = '" . md5($_POST['password']) . "' AND u_is_admin = '1'");
         if(!isset($_POST['username']) || empty($_POST['username'])){
             $errors['username'] = " لطفا نام کاربری خود را وارد کنید";
         }

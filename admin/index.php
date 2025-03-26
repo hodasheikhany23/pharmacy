@@ -3,6 +3,10 @@
     session_regenerate_id();
     define('site',1);
     require_once "includes/connect.php";
+    if(isset($_GET['logout'])){
+        session_destroy();
+        header("location: index.php");
+    }
     if(!isset($_SESSION['username'])){
         require_once "includes/login.php";
     }
@@ -29,9 +33,24 @@
 
 <body>
     <div class="body-container container" id="body-container">
-        <div style="background-color: red">
-            hi hi<br> hi hi <br> hi hi
-        </div>
+        <?php
+        if(isset($_GET['page'])){
+            switch ($_GET['page']){
+                case 'users':
+                    require_once "includes/users.php";
+                    break;
+                case 'adduser':
+                    require_once "includes/adduser.php";
+                default:
+                    require_once "includes/header.php";
+                    break;
+
+            }
+        }
+        else{
+            require_once "includes/dashboard.php";
+        }
+        ?>
     </div>
 </body>
 </html>
