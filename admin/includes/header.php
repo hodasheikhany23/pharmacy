@@ -78,7 +78,7 @@
         <i class="fa-solid fa-gauge"></i>
         داشبورد
     </a>
-    <a class="sidebar-item" href="index.php?menus">
+    <a class="sidebar-item" href="index.php?page=menus">
         <i class="fa-solid fa-list"></i>
         منو ها
     </a>

@@ -41,6 +41,17 @@
                     break;
                 case 'adduser':
                     require_once "includes/adduser.php";
+                    break;
+                case 'menus':
+                    require_once "includes/menus.php";
+                    break;
+                case 'addsub_menu':
+                    require_once "includes/addsub_menu.php";
+                    break;
+                case 'listsub_menu':
+                    require_once "includes/listsub_menu.php";
+                    break;
+
                 default:
                     require_once "includes/header.php";
                     break;
