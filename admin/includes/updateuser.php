@@ -1,6 +1,8 @@
 <?php
-if(!isset($_SESSION['username'])){
-    die("Please <a href='includes/login.php'>login</a> to access this page");
+defined('site') or die('Acces denied');
+
+if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
+    die("Please <a href='index.php?pg=login'>login</a> to access this page");
 }
 $errors = [];
 if(isset($_POST['update'])){
@@ -87,9 +89,9 @@ if($resultUser -> num_rows > 0){
         }
         ?>
     </div>
-    <div class="section-title">
+    <div class="section-title" style="margin-top: 24px !important; padding-top: 0 !important;">
         <h4 class="mb-4">  ویرایش کاربر  </h4>
-        <a href="index.php?page=users" class="button btn btn-primary">
+        <a href="index.php?pg=login&page=users" class="button btn btn-primary">
             <i class="fa-solid fa-list"></i>
             <span style="margin-left: 2px;">| </span> لیست کاربران
         </a>
@@ -109,14 +111,9 @@ if($resultUser -> num_rows > 0){
                 <input name="address" class="form-control" id="address" type="text" value="<?php if(isset($rowUpdate)){ echo $rowUpdate['u_address'];} ?>">
             </div>
             <div class="mb-3 form-check">
-                <input name="is_admin" type="checkbox" class="form-check-input" id="isAdmin">
-                <label class="form-check-label" for="isAdmin" <?php
-                if(isset($rowUpdate)){
-                    if($rowUpdate['u_is_admin'] == 1){
-                        echo "checked";
-                }
-                }
-                ?>> کاربر ادمین است</label>
+                <input name="is_admin" type="checkbox" class="form-check-input" id="isAdmin"
+                    <?php if (isset($rowUpdate) && $rowUpdate['u_is_admin'] == 1) echo 'checked'; ?> >
+                <label class="form-check-label" for="isAdmin">کاربر ادمین است</label>
             </div>
             <button type="submit" name="update" href="" class="button btn btn-success">
                 <i class="fa-solid fa-plus"></i>

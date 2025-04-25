@@ -1,6 +1,8 @@
 <?php
-if(!isset($_SESSION['username'])){
-    die("Please <a href='includes/login.php'>login</a> to access this page");
+defined('site') or die('Acces denied');
+
+if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
+    die("Please <a href='index.php?pg=login'>login</a> to access this page");
 }
 $link = new mysqli("localhost", "root", "", "pharmacy_db");
 $resultUser = $link -> query("SELECT * FROM users where u_id = '".$_GET['id']."'");
@@ -56,8 +58,8 @@ if(isset($_POST['update'])){
         ?>
     </div>
     <div class="section-title">
-        <h4 class="mb-4">  ویرایش رمز عبور کاربر  </h4>
-        <a href="index.php?page=users" class="button btn btn-primary">
+        <h4 class="mb-4" style="margin-top: 0 !important; padding-top: 0 !important;">  ویرایش رمز عبور کاربر  </h4>
+        <a href="index.php?pg=login&page=users" class="button btn btn-primary">
             <i class="fa-solid fa-list"></i>
             <span style="margin-left: 2px;">| </span> لیست کاربران
         </a>

@@ -1,7 +1,5 @@
 <?php
-    session_start();
-    session_regenerate_id();
-    define('site',1);
+    defined('site') or die("access Denied");
     require_once "includes/connect.php";
     if(isset($_GET['logout'])){
         session_destroy();
@@ -11,8 +9,8 @@
         require_once "includes/login.php";
     }
     if(isset($_SESSION['username'])){
-        require_once "includes/header.php";
-    }
+        require_once "admin/includes/header.php";
+
 ?>
 
 <!DOCTYPE html>
@@ -22,7 +20,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> pharmacy | home </title>
-    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="admin/style/style.css">
+    <link rel="stylesheet" href="admin/style/admin.css">
     <link rel="stylesheet" href="fonts/fonts.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.rtl.min.css">
@@ -37,35 +36,69 @@
         if(isset($_GET['page'])){
             switch ($_GET['page']){
                 case 'users':
-                    require_once "includes/users.php";
+                    require_once "admin/includes/users.php";
                     break;
                 case 'adduser':
-                    require_once "includes/adduser.php";
+                    require_once "admin/includes/adduser.php";
                     break;
                 case 'menus':
-                    require_once "includes/menus.php";
+                    require_once "admin/includes/menus.php";
                     break;
                 case 'addsub_menu':
-                    require_once "includes/addsub_menu.php";
+                    require_once "admin/includes/addsub_menu.php";
                     break;
                 case 'listsub_menu':
-                    require_once "includes/listsub_menu.php";
+                    require_once "admin/includes/listsub_menu.php";
                     break;
-
+                case 'categories':
+                    require_once "admin/includes/category/category.php";
+                    break;
+                case 'products':
+                    require_once "admin/includes/products/products.php";
+                    break;
+                case 'addproducts':
+                    require_once "admin/includes/products/add.php";
+                    break;
+                case 'updateproducts':
+                    require_once "admin/includes/products/update.php";
+                    break;
+                case 'pages':
+                    require "admin/includes/pages/pages.php";
+                    break;
+                case 'editpages':
+                    require_once "admin/includes/pages/update.php";
+                    break;
+                case 'pagecontent':
+                    require_once "admin/includes/pages/content.php";
+                    break;
+                case 'addpage':
+                    require_once "admin/includes/pages/addpage.php";
+                    break;
+                case 'profile':
+                    require_once "admin/includes/profile/profile.php";
+                    break;
+                case 'dashboard':
+                    require_once "admin/includes/dashboard.php";
+                    break;
                 default:
-                    require_once "includes/header.php";
+                    require_once "admin/includes/header.php";
                     break;
 
             }
         }
         else{
-            require_once "includes/dashboard.php";
+            require_once "admin/includes/dashboard.php";
         }
         ?>
     </div>
 </body>
 </html>
-
+<?php
+    }
+    else{
+        require_once "includes/login.php";
+    }
+    ?>
 
 
 

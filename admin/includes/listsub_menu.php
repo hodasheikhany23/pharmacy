@@ -1,6 +1,8 @@
 <?php
-if(!isset($_SESSION['username'])){
-    die("Please <a href='includes/login.php'>login</a> to access this page");
+defined('site') or die('Acces denied');
+
+if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
+    die("Please <a href='index.php?pg=login'>login</a> to access this page");
 }
 $errors = [];
 
@@ -20,6 +22,9 @@ if(isset($_GET['action'])){
         $link -> query("DELETE FROM sub_menu WHERE subm_id = '".$_GET['subid']."'");
         if($link->errno == 0){
             $errors['sub_menu'] = "زیر منو با موفقیت حذف شد";
+        }
+        else if ($link -> errno == 1451){
+            $errors['delete'] = "خطا در حذف: این منو دارای اطلاعات وابسته (زیر منو یا صفحه) است. لطفا ابتدا اطلاعات وابسته را حذف کنید.";
         }
         else{
             $errors['sub_menu_error'] = "خطا در حذف";
@@ -55,7 +60,7 @@ if($resultSubMenu ->num_rows != 0){
         }
         ?>
     </div>
-    <div class="section-title">
+    <div class="section-title" style="margin-top: 24px !important; padding-top: 0 !important;">
         <?php
         $resultMenuName=$link -> query("SELECT * FROM menu where menu_id = '".$_GET['id']."'");
         if($resultMenuName ->num_rows != 0 && $link->errno == 0){
@@ -70,8 +75,8 @@ if($resultSubMenu ->num_rows != 0){
             }
             ?>
         </h4>
-        <a href="index.php?page=menus" type="submit" class="button btn btn-primary sign">
-            <i class="fa-solid fa-plus"></i>
+        <a href="index.php?pg=login&page=menus" type="submit" class="button btn btn-primary sign">
+            <i class="fa-solid fa-list"></i>
             <span style="margin-left: 2px;">| </span>لیست منو های اصلی
         </a>
     </div>
@@ -91,7 +96,7 @@ if($resultSubMenu ->num_rows != 0){
                 echo '<td class="px-4 py-2">'.$rowMenu['subm_id'].'</td>';
                 echo '<td class="px-4 py-2">'.$rowMenu['subm_name'].'</td>';
                 echo '<td class="d-flex align-content-center px-4 py-2">'
-                    . '<a class="btn btn-danger text-white me-2" title="حذف" href="index.php?page=listsub_menu&id='.$rowMenu['subm_menu_id'].'&action=deletesub&subid='.$rowMenu['subm_id'].'">'
+                    . '<a class="btn btn-danger text-white me-2" title="حذف" href="index.php?pg=login&page=listsub_menu&id='.$rowMenu['subm_menu_id'].'&action=deletesub&subid='.$rowMenu['subm_id'].'">'
                     . '<i class="fa-solid fa-trash"></i>'
                     . '</a>'
                     . '</td>';

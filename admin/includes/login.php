@@ -10,10 +10,17 @@
             $errors['password'] = 'لطفا رمز عبور  خود را وارد کنید';
         }
         if($result -> num_rows == 1){
+            $time = date("Y-m-d H:i:s");
+            $link -> query("UPDATE users SET u_time = '".$time."'  WHERE u_username = '".$_POST['username']."' AND u_password = '".md5($_POST['password'])."'");
             $row = $result -> fetch_assoc();
             $_SESSION['username'] = $row['u_username'];
             $_SESSION['password'] = $row['u_password'];
             $_SESSION['phone'] = $row['u_phone'];
+            $_SESSION['fname'] = $row['u_fname'];
+            $_SESSION['lname'] = $row['u_lname'];
+            $_SESSION['address'] = $row['u_address'];
+            $_SESSION['time'] = $row['u_time'];
+            $_SESSION['is_admin'] = $row['u_is_admin'];
         }
         else if(!empty($_POST['username']) && !empty($_POST['password']) && $result -> num_rows == 0){
             $errors['login_failed'] = " نام کاربری یا رمز عبور اشتباه است";

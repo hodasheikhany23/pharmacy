@@ -31,7 +31,7 @@
                 </a>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="index.html" class="nav-link">وبسایت</a>
+                <a href="index.php" class="nav-link">وبسایت</a>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
                 <a href="#" class="nav-link">پشتیبان فنی</a>
@@ -67,37 +67,39 @@
 <div class="sidebar active d-flex flex-column" id="sidebar" style="width: 16rem !important;"> <!-- added active class for default open -->
     <button class="close-sidebar" id="close-sidebar"><i class="fa-solid fa-xmark"></i></button>
     <div class="sidebar-header" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true" title="ویرایش پروفایل">
-        <img src="img/user.png" alt="Profile" class="profile-pic">
-        <span>
+        <a href="index.php?page=profile">
+            <img src="admin/img/user.png" alt="Profile" class="profile-pic">
+            <span>
             <?php
             echo $_SESSION['username'];
             ?>
         </span>
+        </a>
     </div>
-    <a class="sidebar-item" href="index.php">
+    <a class="sidebar-item" href="index.php?pg=login&page=dashboard">
         <i class="fa-solid fa-gauge"></i>
         داشبورد
     </a>
-    <a class="sidebar-item" href="index.php?page=menus">
+    <a class="sidebar-item" href="index.php?pg=login&page=menus">
         <i class="fa-solid fa-list"></i>
         منو ها
     </a>
-    <a class="sidebar-item" href="index.php?pages">
+    <a class="sidebar-item menu-sub-parent" onclick="sub()" href="index.php?pg=login&page=pages">
         <i class="fa-solid fa-file"></i>
         صفحات
     </a>
-    <a class="sidebar-item" href="index.php?products">
+    <a class="sidebar-item" href="index.php?pg=login&page=products">
     <i class="fa-solid fa-bottle-droplet"></i>
         دارو ها
     </a>
-    <a class="sidebar-item" href="index.php?blogs">
+    <a class="sidebar-item" href="index.php?pg=login&page=blogs">
         <i class="fa-solid fa-bookmark"></i>
         مقالات
     </a>
-    <a class="sidebar-item" href="index.php?categories">
+    <a class="sidebar-item" href="index.php?pg=login&page=categories">
         <i class="fa-solid fa-grip"></i> دسته بندی دارو ها
     </a>
-    <a class="sidebar-item" href="index.php?page=users">
+    <a class="sidebar-item" href="index.php?pg=login&page=users">
         <i class="fa-solid fa-users"></i> کاربران
     </a>
     <div class="sidebar-item sidebar-item-more" id="toggleCollapse" data-bs-toggle="collapse" data-bs-target="#collapsemore" aria-expanded="false" aria-controls="collapsemore">
@@ -106,15 +108,15 @@
     </div>
     <div class="collapse" id="collapsemore">
         <div class="card card-body">
-            <a class="sidebar-item" href="index.php?page=createoff">
+            <a class="sidebar-item" href="index.php?pg=login&page=createoff">
                    <i class="fa-solid fa-tag"></i>
                    ایجاد تخفیف
             </a>
-            <a class="sidebar-item" href="index.php?page=delivermethod">
+            <a class="sidebar-item" href="index.php?pg=login&page=delivermethod">
                 <i class="fa-solid fa-cart-flatbed-suitcase"></i>
                 شیوه ارسال
             </a>
-            <a class="sidebar-item" href="index.php?page=paymentmethod" style="background-color: transparent !important; color: #1b1b1b">
+            <a class="sidebar-item" href="index.php?pg=login&page=paymentmethod" style="background-color: transparent !important; color: #1b1b1b">
                 <i class="fa-solid fa-credit-card"></i>
                 شیوه پرداخت
             </a>

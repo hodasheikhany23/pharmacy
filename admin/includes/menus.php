@@ -1,47 +1,111 @@
 <?php
-if(!isset($_SESSION['username'])){
-    die("Please <a href='includes/login.php'>login</a> to access this page");
+defined('site') or die('Acces denied');
+
+if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
+    die("Please <a href='index.php?pg=login'>login</a> to access this page");
 }
+$result_icon = $link -> query("SELECT * FROM icons");
 $errors = [];
 if(isset($_POST['submit_add'])){
-    if(isset($_POST['menu_name'])){
+    if(!empty($_POST['menu_name'])){
         $menu_name = $_POST['menu_name'];
     }
     else{
-        echo "Menu name is required";
+        $errors['menu'] = "   نام منو را وارد کنید";
+    }
+    if(isset($_POST['menu_icon'])){
+        $menu_icon = $_POST['menu_icon'];
+    }
+    else{
+        $menu_icon = 6;
     }
     $menuDuplicate = $link->query("SELECT * FROM menu WHERE menu_name = '" . $_POST['menu_name'] . "'");
-    if($menuDuplicate->num_rows == 0){
-        $result = $link -> query("INSERT INTO menu (menu_name) VALUES ('".$menu_name."')");
+    if($menuDuplicate->num_rows == 0 && isset($menu_name)){
+        $result = $link -> query("INSERT INTO menu (menu_name, menu_icon) VALUES ('".$menu_name."','".$menu_icon."')");
         if($link -> errno == 0){
-            $errors['add_menu'] = "منوی جدید با موفقیت ثبت شد";
+            $errors['success_add'] = "منوی جدید با موفقیت ثبت شد";
         }
         else{
             echo $link->error;
         }
     }
+    else{
+        $errors['menu'] = "نام منو نمیتواند تکراری باشد";
+    }
 }
 if(isset($_GET['action'])){
     switch($_GET['action']){
         case "delete":
-            $result = $link -> query("DELETE FROM menu WHERE menu_id = '".$_GET['id']."'");
+            $result = $link -> query("DELETE FROM `menu` WHERE `menu`.`menu_id` = '".$_GET['id']."'");
             if($link -> errno == 0){
-                $errors['delete_menu'] = "منو با موفقیت حذف شد";
+                $errors['success_delete'] = "منو با موفقیت حذف شد";
+                require_once "admin\includes/menus.php";
             }
             else if ($link -> errno == 1451){
-                $errors['delete_menu'] = "خطا در حذف: این منو دارای زیر منو است. لطفا ابتدا زیر منو های مربوط را حذف کنید.";
+                $errors['delete'] = "خطا در حذف: این منو دارای اطلاعات وابسته (زیر منو یا صفحه) است. لطفا ابتدا اطلاعات وابسته را حذف کنید.";
             }
             else{
-                $errors['delete_menu'] = "خطا در حذف منو";
+                echo $link->error;
+                echo $link->errno;
+                $errors['delete'] = "خطا در حذف منو";
             }
             break;
+        case 'edit':
+            $result = $link -> query("SELECT * FROM menu WHERE menu_id = '".clean_id($_GET['id'])."'");
+            if($link -> errno == 0){
+                $row = $result->fetch_assoc();
+                $menu_name = $row['menu_name'];
+                $menu_icon = $row['menu_icon'];
+            }
     }
+
+
 }
 $resultMenu = $link -> query("SELECT * FROM menu");
 ?>
 
 <div class="container">
-    <div class="section-title">
+    <div class="d-flex px-5 py-2 justify-content-center">
+        <?php
+        if(isset($errors['success_add'])){
+            echo '<div class="alert alert-success d-flex align-items-center alert-dismissible fade show py-3 px-5" style="color: #062e20 !important;" role="alert" id="success-add">  
+            <div>  
+                <i class="fa fa-check-circle"></i>  
+                ' . $errors['success_add'] . '  
+            </div>  
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="font-size: smaller"></button>  
+          </div>';
+        }
+        if(isset($errors['menu'])){
+            echo '<div class="alert alert-danger d-flex align-items-center alert-dismissible fade show py-3 px-5" style="color: #510000 !important;" role="alert" id="menu-error">  
+            <div>  
+                <i class="fa fa-exclamation-triangle"></i>  
+                ' . $errors['menu'] . '  
+            </div>  
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="font-size: smaller"></button>  
+          </div>';
+        }
+        if(isset($errors['success_delete'])){
+            echo '<div class="alert alert-success d-flex align-items-center alert-dismissible fade show py-3 px-5" style="color: #062e20 !important;" role="alert" id="success-delete">  
+            <div>  
+                <i class="fa fa-check-circle"></i>  
+                ' . $errors['success_delete'] . '  
+            </div>  
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="font-size: smaller"></button>  
+          </div>';
+        }
+        if(isset($errors['delete'])){
+            echo '<div class="alert alert-danger d-flex align-items-center alert-dismissible fade show py-3 px-5" style="color: #510000 !important;" role="alert" id="delete-error">  
+            <div>  
+                <i class="fa fa-exclamation-triangle"></i>  
+                ' . $errors['delete'] . '  
+            </div>  
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="font-size: smaller"></button>  
+          </div>';
+        }
+        ?>
+    </div>
+    <div class="section-title" style="margin-top: 24px !important; padding-top: 0 !important;">
         <h4>لیست منو ها</h4>
     </div>
     <div>
@@ -50,38 +114,128 @@ $resultMenu = $link -> query("SELECT * FROM menu");
             <tr>
                 <th>ردیف</th>
                 <th>نام</th>
-                <th></th>
+                <th>عملیات</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="menuTableBody">
             <?php
-            while($rowMenu=$resultMenu -> fetch_assoc()){
-                echo '<tr>';
+            echo '<tr>';
+            echo '<td class="px-4 py-2">ایجاد</td>';
+            echo '<td class="px-4 py-2">  
+            <form method="post" action="" class="row g-1">  
+                <div class="col-auto">
+                    <input name="menu_name" class="form-text border-0 p-2 rounded" type="text" placeholder=" نام منو" style="height: 35px !important;">  
+                </div>
+                <div class="col-auto">
+                <select name="icon_menu" class="form-select rounded mr-2" aria-label="Default select example">  
+                    <option selected disabled>   انتخاب نماد منو</option>';
+
+                    if ($result_icon->num_rows > 0) {
+                        while ($row_icon = $result_icon->fetch_assoc()) {
+                            echo '<option value="' . $row_icon['ic_id'] . '"><i class="' . $row_icon['ic_tag'] . '"></i>' . $row_icon['ic_name'] . ' </option>';
+                        }
+                    }
+
+                    echo '      </select>  
+                </div>
+               
+                    <button name="submit_add" class="btn btn-info text-white me-2 w-25" title="ثبت">  
+                        <i class="fa-solid fa-plus me-2"></i>  
+                        ثبت  
+                    </button>     
+            </form>  
+          </td>';
+            echo '<td class="d-flex align-content-center py-2"></td>';
+            echo '</tr>';
+
+            while($rowMenu = $resultMenu->fetch_assoc()) {
+                echo '<tr id="row_'.$rowMenu['menu_id'].'">';
                 echo '<td class="px-4 py-2">'.$rowMenu['menu_id'].'</td>';
-                echo '<td class="px-4 py-2">'.$rowMenu['menu_name'].'</td>';
+                echo '<td class="px-4 py-2" id="name_'.$rowMenu['menu_id'].'">'.$rowMenu['menu_name'].'</td>';
                 echo '<td class="d-flex align-content-center px-4 py-2">'
-                    . '<a class="btn btn-danger text-white me-2" title="حذف" href="index.php?page=menus&action=delete&id='.$rowMenu['menu_id'].'">'
+                    . '<button class="btn btn-info text-white me-2 edit-button" title="ویرایش" data-id="'.$rowMenu['menu_id'].'">'
+                    . '<i class="fa-solid fa-edit"></i>'
+                    . '</button>'
+                    . '<a class="btn btn-danger text-white me-2" title="حذف" href="index.php?pg=login&page=menus&action=delete&id='.$rowMenu['menu_id'].'">'
                     . '<i class="fa-solid fa-trash"></i>'
                     . '</a>'
-                    . '<a class="btn btn-info text-white me-2" title="مشاهده زیر منو ها" href="index.php?page=listsub_menu&id='.$rowMenu['menu_id'].'">'
+                    . '<a class="btn btn-warning text-white me-2" title="مشاهده زیر منو ها" href="index.php?pg=login&page=listsub_menu&id='.$rowMenu['menu_id'].'">'
                     . '<i class="fa-solid fa-bars-staggered"></i>'
                     . '</a>'
                     . '</td>';
                 echo '</tr>';
             }
-            echo '<tr>';
-            echo '<td class="px-4 py-2"></td>';
-            echo '<td class="px-4 py-2"><form method="post" action="" class="form-inline"><input name="menu_name" class="form-text border-0 p-2 rounded w-50" type="text" value="منوی جدید">
-                    <button name="submit_add" class="btn btn-info text-white me-2 w-25" title="ثبت">
-                    <i class="fa-solid fa-plus me-2" ></i>
-                     ثبت
-                    </button>
-                    </form></td>';
-            echo '<td class="d-flex align-content-center py-2">'
-                . '</td>';
-            echo '</tr>';
             ?>
             </tbody>
         </table>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const editButtons = document.querySelectorAll('.edit-button');
+
+        editButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const rowId = this.getAttribute('data-id');
+                const nameCell = document.getElementById('name_' + rowId);
+                const originalName = nameCell.textContent;
+
+                // تبدیل به فرم ویرایش
+                nameCell.innerHTML = `
+    <input type="text" class="form-text border-0 p-2 rounded w-50" value="${originalName}" id="editName_${rowId}">
+    <select name="icon_menu" id="editIcon_${rowId}" class="form-select rounded mr-2" style="width: 25% !important;">
+        <option disabled>انتخاب نماد منو</option>
+    </select>
+    <button class="btn btn-success btn-sm me-2" id="saveButton_${rowId}" data-id="${rowId}">ثبت</button>
+    <button class="btn btn-secondary btn-sm cancel-button" data-id="${rowId}">لغو</button>
+`;
+
+// بارگذاری ایکن‌ها با استفاده از AJAX
+                $.ajax({
+                    url: 'includes/get_icons.php',
+                    method: 'GET',
+                    success: function(data) {
+                        console.log(data); // دیدن داده‌های خام در کنسول
+                        try {
+                            const icons = JSON.parse(data);
+                            icons.forEach(icon => {
+                                const selected = icon.ic_id == originalIconId ? 'selected' : '';
+                                $('#editIcon_' + rowId).append(`<option value="${icon.ic_id}" ${selected}>${icon.ic_name}</option>`);
+                            });
+                        } catch (e) {
+                            console.error("Error parsing JSON:", e);
+                        }
+                    },
+                });
+                // رویداد کلیک برای دکمه ثبت
+                const saveButton = document.getElementById('saveButton_' + rowId);
+                saveButton.addEventListener('click', function() {
+                    const newName = document.getElementById('editName_' + rowId).value;
+                    const newIcon = document.getElementById('editIcon_' + rowId).value;
+
+                    // ارسال داده ها به سرور با AJAX
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', 'update_menu.php', true);
+                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                            nameCell.innerHTML = newName;
+                        } else {
+                            alert('خطا در به‌روزرسانی: ' + xhr.status);
+                            nameCell.innerHTML = originalName; // بازگشت به نام اصلی در صورت خطا
+                        }
+                    };
+                    xhr.send('menu_id=' + encodeURIComponent(rowId) + '&menu_name=' + encodeURIComponent(newName) + '&icon_menu=' + encodeURIComponent(newIcon));
+                });
+
+                // رویداد کلیک برای دکمه لغو
+                const cancelButton = document.querySelector('.cancel-button[data-id="' + rowId + '"]');
+                cancelButton.addEventListener('click', function() {
+                    nameCell.innerHTML = originalName; // بازگشت به نام اصلی
+                });
+            });
+        });
+    });
+</script>

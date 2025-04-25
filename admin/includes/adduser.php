@@ -1,8 +1,10 @@
 <?php
-    if(!isset($_SESSION['username'])){
-        die("Please <a href='includes/login.php'>login</a> to access this page");
-    }
-    $errors = [];
+if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
+    die("Please <a href='index.php?pg=login'>login</a> to access this page");
+}
+    defined('site') or die('Acces denied');
+
+$errors = [];
     if(isset($_POST['submit'])){
         $is_admin = isset($_POST['is_admin']) ? 1 : 0;
         $resultDuplicate = $link->query("SELECT * FROM users WHERE u_username = '" . $_POST['username'] . "'");
@@ -39,7 +41,7 @@
                 }
             }
             else{
-                $phone = null;
+                $phone = "";
             }
             if(isset($_POST['address'])){
                 $address = clean_data($_POST['address']);
@@ -90,9 +92,9 @@
         }
         ?>
     </div>
-    <div class="section-title">
+    <div class="section-title" style="margin-top: 0 !important; padding-top: 0 !important;">
         <h4 class="mb-4">افزودن کاربر جدید  </h4>
-        <a href="index.php?page=users" class="button btn btn-primary">
+        <a href="index.php?pg=login&page=users" class="button btn btn-primary">
             <i class="fa-solid fa-list"></i>
             <span style="margin-left: 2px;">| </span> لیست کاربران
         </a>

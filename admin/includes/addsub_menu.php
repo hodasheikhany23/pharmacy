@@ -1,7 +1,9 @@
 <?php
-if(!isset($_SESSION['username'])){
-    die("Please <a href='includes/login.php'>login</a> to access this page");
+if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
+    die("Please <a href='index.php?pg=login'>login</a> to access this page");
 }
+defined('site') or die('Acces denied');
+
 $errors = [];
 $resultMenu = $link -> query("SELECT * FROM menu");
 if($resultMenu ->num_rows != 0){
