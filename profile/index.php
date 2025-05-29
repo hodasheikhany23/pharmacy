@@ -24,106 +24,107 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 </head>
 
 <body>
     <div class="body-container container" id="body-container">
-        <div class="col-md-3 sidebar">
-            <aside class="sidebar-area blog-sidebar ltn__right-sidebar ">
-                <div class="widget ltn__menu-widget ltn__menu-widget-2--- ltn__menu-widget-2-color-2---">
-                    <h4 class="ltn__widget-title ltn__widget-title-border-2">دسته بندی ها</h4>
-                    <ul>
-                        <li><a href="index.php?pg=login&page=prof"><i class="bi bi-person"></i> پروفایل </a></li>
-                        <li><a href="index.php?pg=login&page=orders"><i class="bi bi-box2"></i> سفارشات </a></li>
-                        <li><a href="index.php?pg=login&page=favorites"><i class="bi bi-heart"></i> علاقه مندی ها </a></li>
-                        <li><a class="btn-danger" style="color: #78261f !important;" href="index.php?logout"><i class="bi bi-box-arrow-right"></i> خروج </a> </li>
-                    </ul>
-                </div>
-                <!-- Top Rated Product Widget -->
-                <div class="widget ltn__top-rated-product-widget">
-                    <h4 class="ltn__widget-title ltn__widget-title-border">محصولات دارای امتیاز برتر</h4>
-                    <ul>
-                        <li>
-                            <div class="top-rated-product-item clearfix">
-                                <div class="top-rated-product-img">
-                                    <a href="product-details.html"><img src="img/product/1.png" alt="#"></a>
-                                </div>
-                                <div class="top-rated-product-info">
-                                    <div class="product-ratting">
-                                        <ul>
-                                            <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                            <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                            <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                            <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                            <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                        </ul>
+        <div class="row">
+            <div class="col-md-3 sidebar">
+                <aside class="sidebar-area blog-sidebar ltn__right-sidebar ">
+                    <div class="widget ltn__menu-widget ltn__menu-widget-2--- ltn__menu-widget-2-color-2---">
+                        <h4 class="ltn__widget-title ltn__widget-title-border-2">دسته بندی ها</h4>
+                        <ul>
+                            <li><a href="index.php?pg=login&page=profile"><i class="bi bi-person"></i> پروفایل </a></li>
+                            <li><a href="index.php?pg=login&page=orders"><i class="bi bi-box2"></i> سفارشات </a></li>
+                            <li><a href="index.php?pg=login&page=favorites"><i class="bi bi-heart"></i> علاقه مندی ها </a></li>
+                            <li><a href="index.php?pg=login&page=changePass"><i class="bi bi-shield-lock"></i> تغییر رمز عبور  </a></li>
+                            <li><a class="btn-danger" style="color: #78261f !important;" href="index.php?logout"><i class="bi bi-box-arrow-right"></i> خروج </a> </li>
+                        </ul>
+                    </div>
+                    <!-- Top Rated Product Widget -->
+                    <div class="widget ltn__top-rated-product-widget">
+                        <h4 class="ltn__widget-title ltn__widget-title-border">محصولات دارای امتیاز برتر</h4>
+                        <ul>
+                            <?php
+                            $select_drogs= $link->query("SELECT * FROM drogs order by drg_rank desc limit 3");
+                            while ($row_drogs = $select_drogs->fetch_assoc()) {
+                                ?>
+                                <li>
+                                    <div class="top-rated-product-item clearfix">
+                                        <div class="top-rated-product-img">
+                                            <?php
+                                            echo '<a href="product-details.html">
+                                                    <img style="width: 70px !important; height: 70px !important;" src="uploads/'.$row_drogs['drg_image'].'" alt="#">
+                                                    </a>';
+                                            ?>
+                                        </div>
+                                        <div class="top-rated-product-info">
+                                            <div class="product-ratting">
+                                                <ul>
+                                                    <?php
+                                                    $drg_rank = $row_drogs['drg_rank'];
+                                                    for($i=1;$i<=$drg_rank;$i++) {
+                                                        echo '<i class="bi bi-star-fill d-flex" style="color: goldenrod !important; font-size: 12px;"></i>';
+                                                        if(($drg_rank - $i < 1) && ($drg_rank - $i > 0)) {
+                                                            echo '<i class="bi bi-star-half d-flex" style="color: goldenrod !important;transform: scaleX(-1);font-size: 12px;"></i>';
+                                                        }
+                                                    }
+                                                    for($i=1;$i<=5-$drg_rank;$i++) {
+                                                        echo '<i class="bi bi-star d-flex" style="color: goldenrod !important;font-size: 12px;"></i>';
+                                                    }
+                                                    ?>
+                                                </ul>
+                                            </div>
+                                            <h6><a href="product-details.html"><?php echo $row_drogs['drg_name'];?></a></h6>
+                                            <div class="product-price">
+                                                <?php
+                                                $result_off = $link ->query("SELECT * FROM off where off_category_id = '".$row_drogs['drg_category_id']."'");
+                                                if($result_off -> num_rows > 0){
+                                                    $row_off = $result_off -> fetch_assoc();
+                                                    $vl = $row_off['off_value'];
+                                                }
+                                                else{
+                                                    $vl = 0;
+                                                }
+                                                $off = $row_drogs['drg_price'] * $vl / 100;
+                                                $price = $row_drogs['drg_price']-$off;
+                                                echo '<del>'.number_format($row_drogs['drg_price']).'</del>';
+                                                echo '<span>'.number_format($price).'</span>';
+                                                ?>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <h6><a href="product-details.html">ماسک سه لایه</a></h6>
-                                    <div class="product-price">
-                                        <span>89،000تومان</span>
-                                        <del>100،000تومان</del>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="top-rated-product-item clearfix">
-                                <div class="top-rated-product-img">
-                                    <a href="product-details.html"><img src="img/product/2.png" alt="#"></a>
-                                </div>
-                                <div class="top-rated-product-info">
-                                    <div class="product-ratting">
-                                        <ul>
-                                            <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                            <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                            <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                            <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                            <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                        </ul>
-                                    </div>
-                                    <h6><a href="product-details.html">میکروسکوپ</a></h6>
-                                    <div class="product-price">
-                                        <span>1،210،000تومان</span>
-                                        <del>1،236،000تومان</del>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="top-rated-product-item clearfix">
-                                <div class="top-rated-product-img">
-                                    <a href="product-details.html"><img src="img/product/3.png" alt="#"></a>
-                                </div>
-                                <div class="top-rated-product-info">
-                                    <div class="product-ratting">
-                                        <ul>
-                                            <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                            <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                            <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                            <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
-                                            <li><a href="#"><i class="far fa-star"></i></a></li>
-                                        </ul>
-                                    </div>
-                                    <h6><a href="product-details.html">ژل ضد عفونی کننده</a></h6>
-                                    <div class="product-price">
-                                        <span>56،000تومان</span>
-                                        <del>70،000تومان</del>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </aside>
-        </div>
-        <?php
-        if(isset($_GET['page'])){
-            switch($_GET['page']){
-                case 'orders':
-                    require_once "profile/includes/products.php";
+                                </li>
+                                <?php
+                            }
+                            ?>
+                        </ul>
+                    </div>
+                </aside>
+            </div>
+            <?php
+            if(isset($_GET['page'])){
+                switch($_GET['page']){
+                    case 'orders':
+                        require_once "profile/includes/orders.php";
+                        break;
+                    case 'favorites':
+                        require_once "profile/includes/favorites.php";
+                        break;
+                    case 'profile':
+                        require_once "profile/includes/profile.php";
+                        break;
+                    case 'changePass':
+                        require_once "profile/includes/changePassword.php";
+                        break;
+                }
             }
-        }
-        ?>
+            else{
+                require_once "profile/includes/profile.php";
+            }
+            ?>
+        </div>
     </div>
 </body>
 </html>

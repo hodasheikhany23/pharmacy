@@ -774,7 +774,6 @@ textarea {
   background-color: var(--white);
   border: 2px solid;
   border-color: var(--border-color-9);
-  height: 65px;
   -webkit-box-shadow: none;
   box-shadow: none;
   padding-right: 20px;
@@ -13056,15 +13055,15 @@ blockquote::before {
 .ltn__comment-reply-btn {
   position: absolute;
   padding: 0 25px 0;
-  border: 2px solid var(--border-color-11);
+  border: 2px solid var(--color-main);
   display: inline-block;
   border-radius: 25px;
   font-size: 14px;
   font-weight: 700;
   height: 40px;
   line-height: 36px;
-  top: 0;
-  left: 0;
+  top: 21px;
+  left: 13px;
 }
 
 .ltn__comment-reply-btn i {
@@ -19075,17 +19074,6 @@ input.cart-plus-minus-box {
 .btn-opacity-9:hover {
   opacity: 1;
 }
-
-.btn:after {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  -webkit-transition: all 0.3s;
-  -moz-transition: all 0.3s;
-  -o-transition: all 0.3s;
-  transition: all 0.3s;
-}
-
 .btn-effect-1:after {
   width: 0%;
   height: 100%;

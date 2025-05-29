@@ -10,16 +10,22 @@ if(isset($_POST['submit_add'])){
         $cat_name = $_POST['cat_name'];
     }
     else{
-        echo "category name is required";
+        echo "نام دسته بندی را وارد کنید";
+    }
+    if(isset($_POST['subm_category'])){
+        $subm_category = $_POST['subm_category'];
+    }
+    else{
+        $errors['menu'] = "منو را انتخاب کنید";
     }
     $catDuplicate = $link->query("SELECT * FROM category WHERE cat_name = '" . $_POST['cat_name'] . "'");
-    if($catDuplicate->num_rows == 0){
-        $result = $link -> query("INSERT INTO category (cat_name, cat_subm_id) VALUES ('".$cat_name."','".$_POST['subm_category']."')");
+    if(isset($subm_category)){
+        $result = $link -> query("INSERT INTO category (cat_name, cat_subm_id) VALUES ('".$cat_name."','". $subm_category."')");
         if($link -> errno == 0){
             $errors['add_category'] = "منوی جدید با موفقیت ثبت شد";
         }
         else{
-            echo $link->error;
+            $errors['menu'] = "منو را انتخاب کنید";
         }
     }
 }
@@ -31,10 +37,10 @@ if(isset($_GET['action'])){
                 $errors['delete_category'] = "منو با موفقیت حذف شد";
             }
             else if ($link -> errno == 1451){
-                $errors['delete_category'] = "خطا در حذف: این منو دارای زیر منو است. لطفا ابتدا زیر منو های مربوط را حذف کنید.";
+                $errors['err_delete_category'] = "خطا در حذف:محصولات مربوط به این دسته بندی را ویرایش یا حذف کنید.";
             }
             else{
-                $errors['delete_category'] = "خطا در حذف منو";
+                $errors['err_delete_category'] = "خطا در حذف منو";
             }
             break;
     }
@@ -42,6 +48,46 @@ if(isset($_GET['action'])){
 $resultcategory = $link -> query("SELECT * FROM category");
 ?>
 <div class="container">
+    <div class="d-flex px-5 py-2 justify-content-center">
+        <?php
+        if(isset($errors['delete_category'])){
+            echo '<div class="alert alert-success d-flex align-items-center alert-dismissible fade show py-3 px-5" style="color: #062e20 !important;" role="alert">
+                          <div>
+                           <i class="fa fa-check-circle"></i>
+                            ' .$errors['delete_category'].'
+                          </div>
+                           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="font-size: smaller"></button>
+                        </div>';
+        }
+        if(isset($errors['add_category'])){
+            echo '<div class="alert alert-success d-flex align-items-center alert-dismissible fade show py-3 px-5" style="color: #062e20 !important;" role="alert">
+                          <div>
+                           <i class="fa fa-check-circle"></i>
+                            ' .$errors['add_category'].'
+                          </div>
+                           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="font-size: smaller"></button>
+                        </div>';
+        }
+        if(isset($errors['err_delete_category'])){
+            echo '<div class="alert alert-danger d-flex align-items-center alert-dismissible fade show py-3 px-5" style="color: #510000 !important;" role="alert">
+                          <div>
+                           <i class="fa fa-exclamation-triangle"></i>
+                            ' .$errors['err_delete_category'].'
+                          </div>
+                           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="font-size: smaller"></button>
+                        </div>';
+        }
+        if(isset($errors['menu'])){
+            echo '<div class="alert alert-danger d-flex align-items-center alert-dismissible fade show py-3 px-5" style="color: #510000 !important;" role="alert">
+                          <div>
+                           <i class="fa fa-exclamation-triangle"></i>
+                            ' .$errors['menu'].'
+                          </div>
+                           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="font-size: smaller"></button>
+                        </div>';
+        }
+        ?>
+    </div>
     <div class="section-title" style="margin-top: 24px !important; padding-top: 0 !important;">
         <h4>لیست دسته بندی ها</h4>
     </div>
@@ -57,10 +103,17 @@ $resultcategory = $link -> query("SELECT * FROM category");
             <tbody>
             <?php
             while($rowcategory=$resultcategory -> fetch_assoc()){
-                echo '<tr>';
+                echo '<tr id="row_'.$rowcategory['cat_id'].'">';
                 echo '<td class="px-4 py-2">'.$rowcategory['cat_id'].'</td>';
-                echo '<td class="px-4 py-2">'.$rowcategory['cat_name'].'</td>';
-                echo '<td class="d-flex align-content-center px-4 py-2">'
+                echo '<td class="px-4 py-2" id="name_'.$rowcategory['cat_id'].'">'.$rowcategory['cat_name'].'</td>';
+                echo '<td class="d-flex align-content-center px-4 py-2">';
+                echo '<button class="edit-button btn btn-warning text-white me-2"
+                        onclick="edit(' . $rowcategory['cat_id'] . ')"
+                        data-id="' . $rowcategory['cat_id'] . '"
+                        data-icon="' . $rowcategory['cat_id'] . '"
+                        id="edit-button-' . $rowcategory['cat_id'] . '">
+                        <i class="fa-solid fa-edit"></i>
+                    </button>'
                     . '<a class="btn btn-danger text-white me-2" title="حذف" href="index.php?pg=login&page=categories&action=delete&id='.$rowcategory['cat_id'].'">'
                     . '<i class="fa-solid fa-trash"></i>'
                     . '</a>'
@@ -101,5 +154,40 @@ $resultcategory = $link -> query("SELECT * FROM category");
         </table>
     </div>
 </div>
+<script>
+    function edit(rowId) {
+        const nameCell = document.getElementById('name_' + rowId);
+        const originalName = nameCell.textContent;
 
+        // ساخت فرم ویرایش
+        nameCell.innerHTML = `
+        <input type="text" class="d-inline form-text border-0 p-2 rounded w-25" value="${originalName}" id="editName_${rowId}">
+        <button class="btn btn-success btn-sm me-2" style="width: 10%!important;" id="saveButton_${rowId}" data-id="${rowId}">ثبت</button>
+        <button class="btn btn-secondary btn-sm"  style="width: 10%!important;"  onclick="cancelEdit(${rowId}, '${originalName}')">لغو</button>`;
+
+        document.getElementById('saveButton_' + rowId).onclick = function() {
+            const newName = document.getElementById('editName_' + rowId).value;
+
+            const xhrPost = new XMLHttpRequest();
+            xhrPost.open('POST', 'admin/includes/category/update_category.php', true);
+            xhrPost.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhrPost.onload = function() {
+                if (xhrPost.status === 200) {
+                    nameCell.innerHTML = newName;
+                } else {
+                    alert('خطا در به‌روزرسانی: ' + xhrPost.status);
+                    nameCell.innerHTML = originalName;
+                }
+            };
+            const params = 'menu_id=' + encodeURIComponent(rowId) +
+                '&menu_name=' + encodeURIComponent(newName) ;
+            xhrPost.send(params);
+        };
+    }
+
+    function cancelEdit(rowId, originalName) {
+        const nameCell = document.getElementById('name_' + rowId);
+        nameCell.innerHTML = originalName;
+    }
+</script>
 

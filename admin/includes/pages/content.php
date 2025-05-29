@@ -3,18 +3,50 @@ if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
     die("Please <a href='index.php?pg=login'>login</a> to access this page");
 }
 $errors = [];
+$fileName = null;
+$resultUser = $link -> query("SELECT * FROM page_detail where pgde_page_id = '".$_GET['id']."'");
+if($resultUser -> num_rows > 0){
+    $rowUpdate = $resultUser -> fetch_assoc();
+}
+else{
+    if(isset($_POST['update'])){
+        $is_active = isset($_POST['is_active']) ? 1 : 2;
+        if (isset($_FILES['picFile']) && $_FILES['picFile']['error'] === UPLOAD_ERR_OK) {
+            $pictureExtention = substr($_FILES['picFile']['name'], strrpos($_FILES['picFile']['name'], '.') + 1);
+
+            if (!in_array($pictureExtention, ['png', 'jpg', 'jpeg'])) {
+                $error['picFile'] = 'پسوند تصویر مجاز نیست';
+            }
+
+            if ($_FILES['picFile']['size'] > 520000) {
+                $error['picFile'] = (isset($error['picFile']) ? $error['picFile'] . "<br>" : "") . 'حجم فایل بیشتر از حد مجاز است';
+            }
+            if (!isset($error['picFile'])) {
+                $fileName = date("YmdHis") . "." . $pictureExtention;
+                move_uploaded_file($_FILES['picFile']['tmp_name'], "uploads/" . $fileName);
+            }
+        }
+        else {
+            $error['picFile'] = 'فایلی انتخاب نشده است';
+        }
+        $addResult = $link->query("INSERT INTO page_detail (pgde_title,pgde_content,pgde_page_id,pgde_image) VALUES ('" . $_POST['title']."','" . $_POST['content']  . "', '".$_GET['id']."','".$fileName."' )");
+        if($link -> errno == 0){
+            $errors['update_user'] = "مطالب صفحه  با موفقیت ثبت شد";
+        }
+        else{
+            $errors['update_user_error'] = "خطا در ثبت اطلاعات";
+        }
+    }
+}
 if(isset($_POST['update'])){
     $is_active = isset($_POST['is_active']) ? 1 : 2;
     if (isset($_FILES['picFile']) && $_FILES['picFile']['error'] === UPLOAD_ERR_OK) {
-        // استخراج پسوند
         $pictureExtention = substr($_FILES['picFile']['name'], strrpos($_FILES['picFile']['name'], '.') + 1);
 
-        // بررسی پسوند مجاز
         if (!in_array($pictureExtention, ['png', 'jpg', 'jpeg'])) {
             $error['picFile'] = 'پسوند تصویر مجاز نیست';
         }
 
-        // بررسی حجم فایل
         if ($_FILES['picFile']['size'] > 520000) {
             $error['picFile'] = (isset($error['picFile']) ? $error['picFile'] . "<br>" : "") . 'حجم فایل بیشتر از حد مجاز است';
         }
@@ -22,17 +54,16 @@ if(isset($_POST['update'])){
             $fileName = date("YmdHis") . "." . $pictureExtention;
             move_uploaded_file($_FILES['picFile']['tmp_name'], "uploads/" . $fileName);
         }
-    } else {
+    }
+    else {
         $error['picFile'] = 'فایلی انتخاب نشده است';
     }
-    if (!isset($error['picFile'])) {
-        $updateResult = $link->query("UPDATE page_detail SET pgde_title = '" . $_POST['title'] . "', pgde_content = '" . $_POST['content'] . "', pgde_image = '" . $fileName . "' WHERE pgde_page_id = '" . clean_id($_GET['id']) . "'");
-
-        if ($link->errno === 0) {
-            $errors['update_user'] = "مطالب صفحه با موفقیت ویرایش شد";
-        } else {
-            $errors['update_user'] = "خطا در به‌روزرسانی: " . $link->error;
-        }
+    $updateResult = $link->query("UPDATE page_detail SET pgde_title = '" . $_POST['title'] . "', pgde_content = '" . $_POST['content'] . "', pgde_image = '" . $fileName . "' WHERE pgde_page_id = '" . clean_id($_GET['id']) . "'");
+    if ($link->errno === 0) {
+        $errors['update_user'] = "مطالب صفحه با موفقیت ویرایش شد";
+    }
+    else {
+        $errors['update_user'] = "خطا در به‌روزرسانی: " . $link->error;
     }
 }
 if(isset($_GET['action'])){
@@ -43,21 +74,6 @@ if(isset($_GET['action'])){
         }
         else{
             $errors['update_user_error'] = "خطا در حذف اطلاعات";
-        }
-    }
-}
-$resultUser = $link -> query("SELECT * FROM page_detail where pgde_page_id = '".$_GET['id']."'");
-if($resultUser -> num_rows > 0){
-    $rowUpdate = $resultUser -> fetch_assoc();
-}
-else{
-    if(isset($_POST['update'])){
-        $addResult = $link->query("INSERT INTO page_detail (pgde_title,pgde_content,pgde_page_id,pgde_image) VALUES ('" . $_POST['title']."','" . $_POST['content']  . "', '".$_GET['id']."','".$fileName."' )");
-        if($link -> errno == 0){
-            $errors['update_user'] = "مطالب صفحه  با موفقیت ثبت شد";
-        }
-        else{
-            $errors['update_user_error'] = "خطا در ثبت اطلاعات";
         }
     }
 }

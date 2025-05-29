@@ -13,7 +13,6 @@ body {
     padding: 0;
     background-color: #3c7bbf09 !important;
 }
-
 .container {
     width: 80%;
     max-width: 1200px;
@@ -23,7 +22,10 @@ body {
 li {
     list-style: none;
 }
-
+.btn-info{
+    background-color: var(--color-main) !important;
+    border-color: var(--color-main) !important;
+}
 .alert {
     padding: 0 !important;
     color: red !important;
@@ -37,14 +39,22 @@ a {
 .no-margin {
     margin-top: 0 !important;
 }
-
+.truncate-multiline {
+    display: -webkit-box;               /* برای محدود کردن خطوط */
+    -webkit-line-clamp: 5;              /* تعداد خط محدود */
+    -webkit-box-orient: vertical;       /* تعیین جهت نمایش */
+    overflow: hidden;                     /* پنهان کردن متن اضافی */
+    text-overflow: ellipsis;              /* افزودن سه نقطه */
+    line-height: 1.5em;                   /* ارتفاع خط، دلخواه */
+    max-height: calc(2.5em * 5);          /* بر اساس تعداد خطوط محدود */
+}
 /* colors */
 :root {
     --color-1: #030209;
     --color-2: #0D0C3A;
     --color-3: #1A2569;
     --color-4: #2A4B95;
-    --color-main: #3c7bbf;
+    --color-main: rgb(60, 123, 191);
     --color-6: #5f89de;
     --color-secondary: #8ACF00;
 }
@@ -260,11 +270,12 @@ header img {
     background-color: var(--color-4) !important;
     ;
 }
-
+.dropdown-toggle::after{
+    position: relative !important;
+}
 /* NAV */
 nav {
     display: flex;
-    border-bottom: 0.5px solid #c6c6c6;
     align-items: center;
     align-content: center;
     flex-wrap: wrap;
@@ -637,7 +648,7 @@ nav {
 }
 
 .blog-card-img-top {
-    width: 100%;
+    width: 390px !important;
     object-fit: cover;
     height: 200px;
     border-radius: 16px 16px 0 0;
@@ -1077,4 +1088,26 @@ footer a {
 }
 .shop-card{
     width: 28% !important;
+}
+@keyframes showAndFadeOut {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    10% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    80% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+.animate-appearAndFade {
+    animation: showAndFadeOut 2s ease-in-out forwards;
 }

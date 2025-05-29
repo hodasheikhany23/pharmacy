@@ -1,5 +1,6 @@
 ﻿<?php
     defined('site') or die('access denied!');
+    require_once "includes/connect.php";
     $errors = [];
     if(isset($_POST['submit'])){
         $result = $link->query("SELECT * FROM users WHERE u_username = '" . addslashes($_POST['username']) . "' AND u_password = '" . md5($_POST['password']) . "' AND u_is_admin = '1'");
@@ -10,8 +11,8 @@
             $errors['password'] = 'لطفا رمز عبور  خود را وارد کنید';
         }
         if($result -> num_rows == 1){
-            $time = date("Y-m-d H:i:s");
-            $link -> query("UPDATE users SET u_time = '".$time."'  WHERE u_username = '".$_POST['username']."' AND u_password = '".md5($_POST['password'])."'");
+            $now = jdate("Y-m-d H:i:s");
+            $link -> query("UPDATE users SET u_time = '".$now."'  WHERE u_username = '".$_POST['username']."' AND u_password = '".md5($_POST['password'])."'");
             $row = $result -> fetch_assoc();
             $_SESSION['username'] = $row['u_username'];
             $_SESSION['password'] = $row['u_password'];

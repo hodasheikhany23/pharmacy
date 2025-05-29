@@ -92,10 +92,17 @@ if($resultSubMenu ->num_rows != 0){
             <tbody>
             <?php
             while($rowMenu=$resultMenu -> fetch_assoc()){
-                echo '<tr>';
+                echo '<tr id="row_'.$rowMenu['subm_id'].'">';
                 echo '<td class="px-4 py-2">'.$rowMenu['subm_id'].'</td>';
-                echo '<td class="px-4 py-2">'.$rowMenu['subm_name'].'</td>';
+                echo '<td class="px-4 py-2" id="name_'.$rowMenu['subm_id'].'">'.$rowMenu['subm_name'].'</td>';
                 echo '<td class="d-flex align-content-center px-4 py-2">'
+                    .'<button class="edit-button btn btn-warning text-white me-2"
+                        onclick="edit(' . $rowMenu['subm_id'] . ')"
+                        data-id="' . $rowMenu['subm_id'] . '"
+                        data-icon="' . $rowMenu['subm_id'] . '"
+                        id="edit-button-' . $rowMenu['subm_id'] . '">
+                        <i class="fa-solid fa-edit"></i>
+                    </button>'
                     . '<a class="btn btn-danger text-white me-2" title="حذف" href="index.php?pg=login&page=listsub_menu&id='.$rowMenu['subm_menu_id'].'&action=deletesub&subid='.$rowMenu['subm_id'].'">'
                     . '<i class="fa-solid fa-trash"></i>'
                     . '</a>'
@@ -118,3 +125,39 @@ if($resultSubMenu ->num_rows != 0){
         </table>
     </div>
 </div>
+<script>
+    function edit(rowId) {
+        const nameCell = document.getElementById('name_' + rowId);
+        const originalName = nameCell.textContent;
+
+        nameCell.innerHTML = `
+        <input type="text" class="d-inline form-text border-0 p-2 rounded w-25" value="${originalName}" id="editName_${rowId}">
+        <button class="btn btn-success btn-sm me-2" style="width: 10%!important;" id="saveButton_${rowId}" data-id="${rowId}">ثبت</button>
+        <button class="btn btn-secondary btn-sm"  style="width: 10%!important;"  onclick="cancelEdit(${rowId}, '${originalName}')">لغو</button>`;
+
+        document.getElementById('saveButton_' + rowId).onclick = function() {
+            const newName = document.getElementById('editName_' + rowId).value;
+
+            const xhrPost = new XMLHttpRequest();
+            xhrPost.open('POST', 'admin/includes/update_sub.php', true);
+            xhrPost.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhrPost.onload = function() {
+                if (xhrPost.status === 200) {
+                    nameCell.innerHTML = newName;
+                } else {
+                    alert('خطا در به‌روزرسانی: ' + xhrPost.status);
+                    nameCell.innerHTML = originalName;
+                }
+            };
+            const params = 'menu_id=' + encodeURIComponent(rowId) +
+                '&menu_name=' + encodeURIComponent(newName) ;
+            xhrPost.send(params);
+        };
+    }
+
+    function cancelEdit(rowId, originalName) {
+        const nameCell = document.getElementById('name_' + rowId);
+        nameCell.innerHTML = originalName;
+    }
+</script>
+

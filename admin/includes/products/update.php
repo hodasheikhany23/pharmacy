@@ -30,7 +30,7 @@ if(isset($_POST['update'])){
     }
     if (!isset($errors['picFile'])) {
         if(isset($name)){
-            $resultAdd = $link->query("UPDATE drogs SET drg_name='". $_POST['name'] ."', drg_company='". $_POST['company'] ."', drg_price='". $_POST['price'] ."', drg_available='". $_POST['available'] ."', drg_category_id='". $_POST['category'] ."', drg_caption='". $_POST['content'] ."', drg_image='".$fileName."' WHERE drg_id=' ". $_GET['id'] ."'");
+            $resultAdd = $link->query("UPDATE drogs SET drg_name='". $_POST['name'] ."', drg_company='". $_POST['company'] ."', drg_price='". $_POST['price'] ."', drg_available='". $_POST['available'] ."', drg_category_id='". $_POST['category'] ."', drg_caption='". $_POST['content'] ."', drg_image='".$fileName."',drg_usage = '".$_POST['usage']."' WHERE drg_id=' ". $_GET['id'] ."'");
             if($link->errno == 0){
                 $errors['add_user'] = "محصول با موفقیت ویرایش شد";
             }
@@ -137,13 +137,17 @@ if($link->errno == 0){
             $result_submenu = $link->query("SELECT * FROM category");
             if ($result_submenu->num_rows > 0) {
                 while ($row_submenu = $result_submenu->fetch_assoc()) {
+                    $result_menu = $link->query("SELECT * FROM sub_menu where subm_id = '".$row_submenu['cat_subm_id']."'");
+                    if ($result_menu->num_rows > 0) {
+                        $row_menu = $result_menu->fetch_assoc();
+                    }
                     if($row_submenu['cat_id'] == $rowSelect['drg_category_id']){
                         $selected = "selected";
                     }
                     else{
                         $selected = "";
                     }
-                    echo '<option value="' . $row_submenu['cat_id'] . '" ' . $selected . '>' . $row_submenu['cat_name'] . '</option>';
+                    echo '<option value="' . $row_submenu['cat_id'] . '" ' . $selected . '>' . $row_submenu['cat_name'] . ' __  '.$row_menu['subm_name'].'</option>';
                 }
             }
             echo '</select>';
@@ -154,6 +158,11 @@ if($link->errno == 0){
             <div class="mb-3">
                 <textarea class="textarea" name="content"
                           style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"><?php if(isset($rowSelect['drg_caption'])){echo $rowSelect['drg_caption'];} ?></textarea>
+            </div>
+            <label for="usage" class="form-label">طریقه مصرف    </label>
+            <div class="mb-3">
+                <textarea class="textarea" name="usage"
+                          style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"><?php if(isset($rowSelect['drg_caption'])){echo $rowSelect['drg_usage'];} ?></textarea>
             </div>
         </div>
         <button type="submit" name="update" href="" class="button btn btn-success">

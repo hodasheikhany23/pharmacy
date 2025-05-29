@@ -1,52 +1,72 @@
 <?php
-defined('site') or die('Acces denied');
+defined('site') or die('Access denied');
 
-if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
+if (!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1') {
     die("Please <a href='index.php?pg=login'>login</a> to access this page");
 }
+
 $errors = [];
-if(isset($_POST['update'])){
+
+if (isset($_POST['update'])) {
     $is_admin = isset($_POST['is_admin']) ? 1 : 0;
-    if(isset($_POST['username'])){
-        if(mb_strlen(clean_data($_POST['username'])) > 2){
-            $username = clean_data($_POST['username']) ;
+
+    // بررسی و پاکسازی یوزرنیم
+    if (isset($_POST['username'])) {
+        if (mb_strlen($_POST['username']) > 2) {
+            $username = $_POST['username']; // فرض بر این است که کنترل شده است
         }
-        else{
+        else {
             $errors['username'] = "نام کاربری باید بیشتر از 2 کاراکتر باشد";
         }
     }
-    else{
-        $errors['username'] = "نام کاربری را وارد کنید" ;
+    else {
+        $errors['username'] = "نام کاربری را وارد کنید";
     }
-    if(!empty($_POST['phone'])){
-        if(mb_strlen(clean_data($_POST['phone'])) == 11 && is_numeric(clean_data($_POST['phone']))){
-            $phone = clean_data($_POST['phone']);
+
+    // بررسی شماره تلفن
+    if (!empty($_POST['phone'])) {
+        if (mb_strlen($_POST['phone']) == 11 && is_numeric($_POST['phone'])) {
+            $phone = $_POST['phone'];
         }
-        else{
-            $errors['phone'] = 'شماره موبایل باید عددی و 11 رقم باشد' ;
+        else {
+            $errors['phone'] = 'شماره موبایل باید عددی و 11 رقم باشد';
         }
     }
-    else{
-        $phone = null;
+    else {
+        $phone = null; // در صورت عدم وارد کردن شماره تلفن
     }
-    if(isset($_POST['address'])){
-        $address = clean_data($_POST['address']);
+
+    // بررسی آدرس
+    if (isset($_POST['address'])) {
+        $address = $_POST['address'];
     }
-    if(isset($username)){
-        $updateResult = $link->query("UPDATE users SET u_username = '" . $username . "',u_phone = '" .  $phone . "',u_address = '" .  $address . "',u_is_admin='".$is_admin."' where u_id = '".$_GET['id']."' ");
-        if($link -> errno == 0){
+    else {
+        $address = '';
+    }
+
+    // اگر خطا نبود، عملیات بروزرسانی انجام می‌شود
+    if (isset($username) && !isset($errors['username']) && !isset($errors['phone'])) {
+        // فرض بر این است که کاربر با این ID وجود دارد
+        $user_id = $_GET['id'];
+
+        // ساختن کوئری به صورت دستی (بدون اسکیپ کردن)
+        $sql = "UPDATE users SET u_username='" . $username . "',u_phone='" . ($phone !== null ? $phone : '') . "',u_address='" . $address . "',u_is_admin='" . $is_admin . "'WHERE u_id='" . $user_id . "'";
+        $link->query($sql);
+        if ($link->errno == 0) {
             $errors['update_user'] = "مشخصات کاربر با موفقیت ویرایش شد";
         }
-        else{
+        else {
             $errors['update_user_error'] = "خطا در ویرایش اطلاعات";
         }
     }
 }
-$resultUser = $link -> query("SELECT * FROM users where u_id = '".$_GET['id']."'");
-if($resultUser -> num_rows > 0){
-    $rowUpdate = $resultUser -> fetch_assoc();
-}
 
+// گرفتن اطلاعات کاربر قبل از ویرایش
+$resultUser = $link->query("SELECT * FROM users WHERE u_id='" . $_GET['id'] . "'");
+
+if ($resultUser && $resultUser->num_rows > 0) {
+    $rowUpdate = $resultUser->fetch_assoc();
+}
 ?>
 <div class="container">
     <div class="d-flex px-5 py-2 justify-content-center">

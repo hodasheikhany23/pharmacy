@@ -1,117 +1,114 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> pharmacy | home </title>
-    <link rel="stylesheet" href="../style/style.css">
-    <link rel="stylesheet" href="../fonts/fonts.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.rtl.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
-</head>
-
-<body>
-<?php
+﻿<?php
 require_once 'includes/header.php';
+require_once 'includes/connect.php';
+$error = [];
+if (isset($_POST['submit'])) {
+    if (isset($_POST['fName']) && mb_strlen(clean_data($_POST['fName'])) > 1) {
+        $fname = clean_data($_POST['fName']);
+    } else {
+        $error['fName'] = '<div class="alert" role="alert">' . 'نام باید حداقل 2 کاراکتر باشد' . ' </div>';
+    }
+    if (isset($_POST['fName']) && mb_strlen(clean_data($_POST['lName'])) > 2) {
+        $lname = clean_data($_POST['lName']);
+    } else {
+        $error['lName'] = '<div class="alert" role="alert">' . 'نام خانوادگی باید حداقل 3 کاراکتر باشد' . ' </div>';
+    }
+    if (isset($_POST['username']) && mb_strlen(clean_data($_POST['username'])) > 1) {
+        $username = clean_data($_POST['username']);
+    } else {
+        $error['fName'] = '<div class="alert" role="alert">' . 'نام باید حداقل 2 کاراکتر باشد' . ' </div>';
+    }
+    if (isset($_POST['phone']) && mb_strlen(clean_data($_POST['phone'])) > 10 && is_numeric(clean_data($_POST['phone']))) {
+        $phone = clean_data($_POST['phone']);
+    }
+    else {
+        $error['phone'] = '<div class="alert" role="alert">' . 'شماره موبایل باید عددی و 10 رقم باشد' . ' </div>';
+    }
+    if (isset($_POST['citySelect'])) {
+        $city = clean_data($_POST['citySelect']);
+    }
+    else {
+        $error['citySelect'] = '<div class="alert" role="alert">' . 'لطفا شهر خود را انتخاب کنید' . ' </div>';
+    }
+    if (empty($_POST['password'])) {
+        $error['password'] = '<div class="alert" role="alert">' . 'رمز عبور خود را وارد کنید' . ' </div>';
+    } else if (empty($_POST['confirmPassword'])) {
+        $error['confirmPassword'] = '<div class="alert" role="alert">' . 'تکرار رمز عبور را وارد کنید' . ' </div>';
+    } else {
+        if ($_POST['password'] === $_POST['confirmPassword']) {
+            $password = $_POST['password'];
+        }
+        else {
+            $error['confirmPassword'] = '<div class="alert" role="alert">' . 'رمز عبور و تکرار آن برابر نیستند' . ' </div>';
+        }
+    }
+    if (isset($_POST['iAgree'])) {
+        $checkAgree = true;
+    } else {
+        $checkAgree = false;
+        $error['checkAgree'] = '<div class="alert" role="alert">' . 'لطفا قوانین را مطالعه و گزینه قبول قوانین را انتخاب کنید' . ' </div>';
+    }
+    if(isset($_POST['picFile']))
+    {
+        $pictureExtention = substr($_FILES['picFile']['name'], strrpos($_FILES['picFile']['name'], '.')+1);
+        if(!in_array($pictureExtention, ['png', 'jpg', 'jpeg'])) {
+            $error['picFile'] = '<div class="alert" role="alert">' . 'پسوند مجاز نیست' . ' </div>';
+        }
+        if($_FILES['picFile']['size'] > 520000) {
+            $error['picFile']= (isset($error['picFile'])? $error['picFile']."<br>":"").'<div class="alert" role="alert">' . 'حجم فایل بیشتر از حد مجاز است' . ' </div>';
+        }
+        if(!isset($error['picFile'])) {
+            $fileName = date("YmdHis") . "pharmacy" .$pictureExtention;
+            move_uploaded_file($_FILES['picFile']['tmp_name'], "uploads/" . $fileName);
+        }
+    }
+    else{
+        $fileName=null;
+    }
+    if(isset($_POST['address'])) {
+        $address = clean_data($_POST['address']);
+    }
+    if(empty($error)&& $checkAgree) {
+        $resultRegister = $link->query("INSERT INTO users (u_username, u_password, u_phone, u_address,u_fname,u_lname,u_city,u_image) values ('".$username."','".md5($password)."','".$phone."','".$address."','".$fname."','".$lname."','".$city."','".$fileName."')");
+        if($link->errno==0) {
+            $errors['register'] = "ثبت نام با موفقیت انجام شد";
+            echo '<script>window.location.replace("index.php?pg=login");</script>';
+        }
+        else {
+            $errors['err_register']="خطا در انجام عملیات!";
+        }
+    }
+}
 ?>
 <div class="clearfix"></div>
-<section class="container-fluid text-lg-right text-center mt-4 p-3 mb-5">
-    <div class="container">
-        <div class="row d-flex align-items-center pt-lg-5">
+<section class="container-fluid text-lg-right text-center pb-5 mb-5">
+    <div class="container  mb-5">
+        <div class="row d-flex align-items-center mb-5">
             <div class="col-lg-7 pl-lg-5 text-center order-2 order-lg-1">
                 <div class="section-title" style="padding: 0 !important; margin: 0 !important;">
-                    <span class="line"></span>
                     <p>ثبت نام کاربر </p>
-                    <span class="line"></span>
                 </div>
-                <?php
-                function clean_data($value)
-                {
-                    $value = trim($value);
-                    $value = str_replace('ي', 'ی', $value);
-                    $value = strip_tags($value);
-                    return $value;
-                }
-
-                $error = [];
-                if (isset($_POST['submit'])) {
-                    if (isset($_POST['fName']) && mb_strlen(clean_data($_POST['fName'])) > 1) {
-                        echo $_POST['fName'];
-                        echo '<br>';
-                    } else {
-                        $error['fName'] = '<div class="alert" role="alert">' . 'نام باید حداقل 2 کاراکتر باشد' . ' </div>';
-                    }
-                    if (isset($_POST['fName']) && mb_strlen(clean_data($_POST['lName'])) > 2) {
-                        echo $_POST['lName'];
-                        echo '<br>';
-                    } else {
-                        $error['lName'] = '<div class="alert" role="alert">' . 'نام خانوادگی باید حداقل 3 کاراکتر باشد' . ' </div>';
-                    }
-                    if (isset($_POST['phone']) && mb_strlen(clean_data($_POST['phone'])) > 10 && is_numeric(clean_data($_POST['phone']))) {
-                        echo $_POST['phone'];
-                        echo '<br>';
-                    } else {
-                        $error['phone'] = '<div class="alert" role="alert">' . 'شماره موبایل باید عددی و 10 رقم باشد' . ' </div>';
-                    }
-                    if (isset($_POST['email'])) {
-                        echo $_POST['email'];
-                        echo '<br>';
-                    }
-                    if (isset($_POST['citySelect'])) {
-                        echo $_POST['citySelect'];
-                        echo '<br>';
-                    } else {
-                        $error['citySelect'] = '<div class="alert" role="alert">' . 'لطفا شهر خود را انتخاب کنید' . ' </div>';
-                    }
-                    if (empty($_POST['password'])) {
-                        $error['password'] = '<div class="alert" role="alert">' . 'رمز عبور خود را وارد کنید' . ' </div>';
-                    } else if (empty($_POST['confirmPassword'])) {
-                        $error['confirmPassword'] = '<div class="alert" role="alert">' . 'تکرار رمز عبور را وارد کنید' . ' </div>';
-                    } else {
-                        if ($_POST['password'] === $_POST['confirmPassword']) {
-                            echo $_POST['password'];
-                        } else {
-                            $error['confirmPassword'] = '<div class="alert" role="alert">' . 'رمز عبور و تکرار آن برابر نیستند' . ' </div>';
-                        }
-                    }
-                    if (!isset($_POST['genderRadio'])) {
-                        $error['genderRadio'] = "یک گزینه را انتخاب کنید";
-                        echo '<br>';
-                    }
-                    if (isset($_POST['genderRadio']) && !in_array($_POST['genderRadio'], ['woman','man'])) {
-                        $error['genderRadio'] = "لطفا از بین گزینه های موجود انتخاب کنید";
-                    }
-                    if (isset($_POST['description'])) {
-                        echo $_POST['description'];
-                        echo '<br>';
-                    }
-                    if (isset($_POST['iAgree'])) {
-                        $checkAgree = true;
-                    } else {
-                        $checkAgree = false;
-                        $error['checkAgree'] = '<div class="alert" role="alert">' . 'لطفا قوانین را مطالعه و گزینه قبول قوانین را انتخاب کنید' . ' </div>';
-                    }
-
-                    $pictureExtention = substr($_FILES['picFile']['name'], strrpos($_FILES['picFile']['name'], '.')+1);
-                    if(!in_array($pictureExtention, ['png', 'jpg', 'jpeg'])) {
-                        $error['picFile'] = '<div class="alert" role="alert">' . 'پسوند مجاز نیست' . ' </div>';
-                    }
-                    if($_FILES['picFile']['size'] > 520000) {
-                        $error['picFile']= (isset($error['picFile'])? $error['picFile']."<br>":"").'<div class="alert" role="alert">' . 'حجم فایل بیشتر از حد مجاز است' . ' </div>';
-                    }
-                    if(!isset($error['picFile'])) {
-                        $fileName = date("YmdHis") . "pharmacy" .$pictureExtention;
-                        move_uploaded_file($_FILES['picFile']['tmp_name'], "uploads/" . $fileName);
-                        echo $_FILES['picFile']['name'];
-                        echo "<br>";
-                    }
-                    echo $checkAgree;
-                }
-                ?>
                 <div class="card p-5">
+                    <?php
+                    if(isset($errors['err_register'])){
+                        echo '<div class="alert alert-danger d-flex align-items-center alert-dismissible fade show py-3 px-3" style="color: #510000 !important;" role="alert">
+                                  <div class="px-5">
+                                   <i class="bi bi-exclamation-triangle" class="mr-3"></i>
+                                    ' .$errors['err_register'].'
+                                  </div>
+                                   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="font-size: smaller"></button>
+                                </div>';
+                    }
+                    if(isset($errors['register'])){
+                        echo '<div class="alert alert-success d-flex align-items-center alert-dismissible fade show py-3 px-3" style="color: #003907 !important;" role="alert">
+                                  <div class="px-5">
+                                   <i class="bi bi-check-all" class="mr-3"></i>
+                                    ' .$errors['register'].'
+                                  </div>
+                                   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="font-size: smaller"></button>
+                                </div>';
+                    }
+            ?>
                     <form class="contact-form" method="post" action="" enctype="multipart/form-data">
                         <div class="row">
                             <div class="col">
@@ -155,44 +152,14 @@ require_once 'includes/header.php';
                                     }
                                     ?>
                                 </div>
-                                <div class="form-group ">
-                                    <select name="citySelect" class="form-control form-select mb-2 form-select-sm">
-                                        <option disabled selected> شهر خود را انتخاب کنید*</option>
-                                        <option value="mashhad">مشهد</option>
-                                        <option value="toeghabe"> طرقبه</option>
-                                        <option value="shandiz"> شاندیز</option>
-                                    </select>
-                                    <?php
-                                    if (isset($error['citySelect'])) {
-                                        echo $error['citySelect'];
-                                    }
-                                    ?>
-                                </div>
                                 <div class="form-group">
                                     <div class="mb-3">
-                                        <label class="file-label" for="formFile">بارگذاری تصویر</label>
+                                        <label class="file-label" for="formFile" style="font-size: 14px">بارگذاری تصویر پروفایل (الزامی نیست*) </label>
                                         <input class="form-control" type="file" id="formFile" name="picFile" value="picFile">
                                     </div>
                                     <?php
                                     if (isset($error['picFile'])) {
                                         echo $error['picFile'];
-                                    }
-                                    ?>
-                                </div>
-                                <div class="form-group">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="genderRadio"
-                                               id="inlineRadio1" value="woman">
-                                        <label class="form-check-label" for="inlineRadio1">خانم</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="genderRadio"
-                                               id="inlineRadio2" value="man">
-                                        <label class="form-check-label" for="inlineRadio2">مرد</label>
-                                    </div>
-                                    <?php
-                                    if (isset($error['genderRadio'])) {
-                                        echo $error['genderRadio'];
                                     }
                                     ?>
                                 </div>
@@ -251,14 +218,26 @@ require_once 'includes/header.php';
                                     }
                                     ?>
                                 </div>
-
-                                <div class="form-group">
-                                        <textarea class="form-control" name="description" rows="3"
-                                                  placeholder="توضیحات"><?php
-                                            if (isset($_POST['description'])) {
-                                                echo $_POST['description'];
-                                            }
-                                            ?></textarea>
+                                <div class="form-group ">
+                                    <select name="citySelect" class="form-control form-select mb-2 form-select-sm">
+                                        <option disabled selected> شهر خود را انتخاب کنید*</option>
+                                        <option value="mashhad">مشهد</option>
+                                        <option value="toeghabe"> طرقبه</option>
+                                        <option value="shandiz"> شاندیز</option>
+                                    </select>
+                                    <?php
+                                    if (isset($error['citySelect'])) {
+                                        echo $error['citySelect'];
+                                    }
+                                    ?>
+                                </div>
+                                <div class="form-group ">
+                                    <label for="address">آدرس</label>
+                                    <textarea name="address" id="address"><?php
+                                        if (isset($_POST['address'])) {
+                                            echo $_POST['address'];
+                                        }
+                                        ?></textarea>
                                 </div>
                             </div>
                             <div style="display: flex; justify-content: center; flex-direction: column;">
@@ -269,8 +248,8 @@ require_once 'includes/header.php';
                                     </button>
                                 </div>
                                 <div class="btn btn-link"
-                                     style="font-size: 12px !important; color: #3C7BBF !important;">
-                                    <a href="login.php" style="color: #3C7BBF !important;">ثبت نام کرده اید؟ وارد
+                                     style="font-size: 14px !important; color: #3C7BBF !important;">
+                                    <a href="index.php?pg=login" style="color: #3C7BBF !important;">ثبت نام کرده اید؟ وارد
                                         شوید </a>
                                 </div>
                             </div>
@@ -284,16 +263,3 @@ require_once 'includes/header.php';
         </div>
     </div>
 </section>
-<div class="text-center p-3" style="background-color: #e9ecef;">
-    <p>&copy; 2025 کلیه حقوق محفوظ است. | طراحی شده توسط hoda</p>
-</div>
-
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="../js/script.js"></script>
-
-</body>
-
-</html>

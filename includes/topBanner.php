@@ -19,7 +19,7 @@
     <style>
         .top_banner{
             width: 1280px !important;
-            height: 200px !important;
+            height: auto !important;
             border-radius: 12px ;
         }
         h1 {
@@ -55,10 +55,10 @@
     </div>
     <div class="row">
         <div class="col-md-12 d-flex justify-content-center">
-            <div class="about-card mb-5">
+            <div class="about-card">
                 <div class="about-container">
                     <div class="about-text">
-                        <div class="section-title" style="margin-top: 0 !important;">
+                        <div class="section-title" style="margin: 0 !important; padding:0 !important; ">
                             <p><?php
                                 if($row)
                                 echo $row['pgde_title'];

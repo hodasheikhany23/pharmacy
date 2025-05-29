@@ -1,65 +1,76 @@
 <?php
-if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
+defined('site') or die('Access denied');
+
+if (!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1') {
     die("Please <a href='index.php?pg=login'>login</a> to access this page");
 }
-    defined('site') or die('Acces denied');
-
 $errors = [];
-    if(isset($_POST['submit'])){
-        $is_admin = isset($_POST['is_admin']) ? 1 : 0;
-        $resultDuplicate = $link->query("SELECT * FROM users WHERE u_username = '" . $_POST['username'] . "'");
-        if($resultDuplicate->num_rows != 0){
-            $errors['duplicate'] = "این نام کاربری در سامانه موجود است. لطفا نام کاربری جدیدی وارد کنید";
-        }
-        else{
-            if(isset($_POST['username'])){
-                if(mb_strlen(clean_data($_POST['username'])) > 2){
-                    $username = clean_data($_POST['username']) ;
-                }
-                else{
-                    $errors['username'] = "نام کاربری باید بیشتر از 2 کاراکتر باشد";
-                }
-            }
-            else{
-                $errors['username'] = "نام کاربری را وارد کنید" ;
-            }
-            if(strlen($_POST['password']) < 8){
-                $errors['password'] = "رمز عبور باید حداقل 8 کاراکتر باشد";
-            }
-            else if($_POST['password'] != $_POST['confirm_password']){
-                $errors['password'] = "رمز عبور  و تکرار آن برابر نیستند";
-            }
-            else{
-                $password = $_POST['password'];
-            }
-            if (isset($_POST['phone'])) {
-                if(mb_strlen(clean_data($_POST['phone'])) == 11 && is_numeric(clean_data($_POST['phone']))){
-                    $phone = clean_data($_POST['phone']);
-                }
-                else{
-                    $errors['phone'] = 'شماره موبایل باید عددی و 11 رقم باشد' ;
-                }
-            }
-            else{
-                $phone = "";
-            }
-            if(isset($_POST['address'])){
-                $address = clean_data($_POST['address']);
-            }
-            if(isset($username) && isset($password)){
-                $link->query("INSERT INTO users (u_username, u_password, u_phone, u_address, u_is_admin) VALUES ('" . $username . "', '" . md5($password) . "', '" .  $phone . "', '" .  $address . "','".$is_admin."')");
+if (isset($_POST['submit'])) {
+    $is_admin = isset($_POST['is_admin']) ? 1 : 0;
+    $username = '';
+    $password = '';
+    $phone = '';
+    $address = '';
 
-                if($link->errno == 0){
-                    $errors['add_user'] = "کاربر جدید با موفقیت ثبت شد";
-                }
-                else{
-                    $errors['add_user_error'] = "خطا در ذخیره اطلاعات";
-                }
-            }
+    if (isset($_POST['username'])) {
+        $username_input = clean_data($_POST['username']);
+        if (mb_strlen($username_input) > 2) {
+            $username = $username_input;
+        } else {
+            $errors['username'] = "نام کاربری باید بیشتر از ۲ کاراکتر و تنها شامل حروف، اعداد و خط‌تیره باشد.";
         }
     }
+    else {
+        $errors['username'] = "نام کاربری را وارد کنید.";
+    }
+    if (isset($_POST['phone'])) {
+        $phone_input = clean_data($_POST['phone']);
+        if (mb_strlen($phone_input) == 11 && is_numeric($phone_input)) {
+            $resultDuplicate = $link->query("SELECT * FROM users WHERE u_phone = '$phone_input'");
+            if ($resultDuplicate->num_rows != 0) {
+                $errors['duplicate'] = "این شماره موبایل در سامانه موجود است. لطفا شماره جدید وارد کنید.";
+            }
+            else {
+                $phone = $phone_input;
+            }
+        }
+        else {
+            $errors['phone'] = 'شماره موبایل باید عددی و 11 رقم باشد';
+        }
+    }
+    else {
+        $errors['phone'] = 'شماره تلفن را وارد کنید';
+    }
 
-    ?>
+    if (isset($_POST['password'])) {
+        if (mb_strlen($_POST['password']) < 8) {
+            $errors['password'] = "رمز عبور باید حداقل 8 کاراکتر باشد.";
+        } elseif ($_POST['password'] != $_POST['confirm_password']) {
+            $errors['password'] = "رمز عبور و تکرار آن برابر نیستند.";
+        } else {
+            $password = $_POST['password'];
+        }
+    }
+    else {
+        $errors['password'] = "رمز عبور را وارد کنید.";
+    }
+    if (isset($_POST['address'])) {
+        $address = trim($_POST['address']);
+    }
+
+    // در صورت نداشتن خطا، درج در دیتابیس
+    if (empty($errors)) {
+        $sql = "INSERT INTO users (u_username, u_password, u_phone, u_address, u_is_admin) VALUES ('" . $username . "','" . md5($password) . "','" . $phone . "','" . $address . "'," . $is_admin . ")";
+        $link->query($sql);
+        if ($link->errno == 0) {
+            $errors['add_user'] = "کاربر با موفقیت ثبت شد .";
+        }
+        else {
+            $errors['add_user_error'] = "خطا در ذخیره اطلاعات. لطفاً مجدداً تلاش کنید.";
+        }
+    }
+}
+?>
 <div class="container">
     <div class="d-flex px-5 py-2 justify-content-center">
         <?php

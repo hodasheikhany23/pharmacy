@@ -13,8 +13,8 @@ if(isset($_POST['submit_add'])){
     else{
         $errors['menu'] = "   نام منو را وارد کنید";
     }
-    if(isset($_POST['menu_icon'])){
-        $menu_icon = $_POST['menu_icon'];
+    if(isset($_POST['icon_menu'])){
+        $menu_icon = $_POST['icon_menu'];
     }
     else{
         $menu_icon = 6;
@@ -36,18 +36,21 @@ if(isset($_POST['submit_add'])){
 if(isset($_GET['action'])){
     switch($_GET['action']){
         case "delete":
-            $result = $link -> query("DELETE FROM `menu` WHERE `menu`.`menu_id` = '".$_GET['id']."'");
-            if($link -> errno == 0){
-                $errors['success_delete'] = "منو با موفقیت حذف شد";
-                require_once "admin\includes/menus.php";
-            }
-            else if ($link -> errno == 1451){
-                $errors['delete'] = "خطا در حذف: این منو دارای اطلاعات وابسته (زیر منو یا صفحه) است. لطفا ابتدا اطلاعات وابسته را حذف کنید.";
+            if($_GET['id'] != '44' && $_GET['id'] != '47' && $_GET['id'] != '49') {
+                $result = $link->query("DELETE FROM `menu` WHERE `menu`.`menu_id` = '" . $_GET['id'] . "'");
+                if ($link->errno == 0) {
+                    $errors['success_delete'] = "منو با موفقیت حذف شد";
+                    require_once "admin\includes/menus.php";
+                } else if ($link->errno == 1451) {
+                    $errors['delete'] = "خطا در حذف: این منو دارای اطلاعات وابسته (زیر منو یا صفحه) است. لطفا ابتدا اطلاعات وابسته را حذف کنید.";
+                } else {
+                    echo $link->error;
+                    echo $link->errno;
+                    $errors['delete'] = "خطا در حذف منو";
+                }
             }
             else{
-                echo $link->error;
-                echo $link->errno;
-                $errors['delete'] = "خطا در حذف منو";
+                $errors['delete'] = " این منو قابل حذف شدن نیست! برای حذف آن با پشتیبانی فنی تماس بگیرید. ";
             }
             break;
         case 'edit':
@@ -152,17 +155,25 @@ $resultMenu = $link -> query("SELECT * FROM menu");
                 echo '<tr id="row_'.$rowMenu['menu_id'].'">';
                 echo '<td class="px-4 py-2">'.$rowMenu['menu_id'].'</td>';
                 echo '<td class="px-4 py-2" id="name_'.$rowMenu['menu_id'].'">'.$rowMenu['menu_name'].'</td>';
-                echo '<td class="d-flex align-content-center px-4 py-2">'
-                    . '<button class="btn btn-info text-white me-2 edit-button" title="ویرایش" data-id="'.$rowMenu['menu_id'].'">'
-                    . '<i class="fa-solid fa-edit"></i>'
-                    . '</button>'
-                    . '<a class="btn btn-danger text-white me-2" title="حذف" href="index.php?pg=login&page=menus&action=delete&id='.$rowMenu['menu_id'].'">'
-                    . '<i class="fa-solid fa-trash"></i>'
-                    . '</a>'
-                    . '<a class="btn btn-warning text-white me-2" title="مشاهده زیر منو ها" href="index.php?pg=login&page=listsub_menu&id='.$rowMenu['menu_id'].'">'
-                    . '<i class="fa-solid fa-bars-staggered"></i>'
-                    . '</a>'
-                    . '</td>';
+                echo '<td class="d-flex align-content-center px-4 py-2">';
+                echo '<button class="edit-button btn btn-warning text-white me-2"
+                        onclick="editRow(' . $rowMenu['menu_id'] . ', ' . $rowMenu['menu_icon'] . ')"
+                        data-id="' . $rowMenu['menu_id'] . '"
+                        data-icon="' . $rowMenu['menu_icon'] . '"
+                        id="edit-button-' . $rowMenu['menu_id'] . '">
+                        <i class="fa-solid fa-edit"></i>
+                    </button>';
+                if($rowMenu['menu_id'] != '44' && $rowMenu['menu_id'] != '47' && $rowMenu['menu_id'] != '49'){
+                    echo '<a class="btn btn-danger text-white me-2" title="حذف" href="index.php?pg=login&page=menus&action=delete&id='.$rowMenu['menu_id'].'">'
+                        . '<i class="fa-solid fa-trash"></i>'
+                        . '</a>';
+                }
+                if($rowMenu['menu_id'] == '44') {
+                    echo '<a class="btn btn-info text-white me-2" title="مشاهده زیر منو ها" href="index.php?pg=login&page=listsub_menu&id=' . $rowMenu['menu_id'] . '">'
+                        . '<i class="fa-solid fa-bars-staggered"></i>'
+                        . '</a>'
+                        . '</td>';
+                }
                 echo '</tr>';
             }
             ?>
@@ -171,71 +182,70 @@ $resultMenu = $link -> query("SELECT * FROM menu");
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const editButtons = document.querySelectorAll('.edit-button');
+    function editRow(rowId, iconId) {
+        const nameCell = document.getElementById('name_' + rowId);
+        const originalName = nameCell.textContent;
 
-        editButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const rowId = this.getAttribute('data-id');
-                const nameCell = document.getElementById('name_' + rowId);
-                const originalName = nameCell.textContent;
+        // ساخت فرم ویرایش
+        nameCell.innerHTML = `
+        <input type="text" class="d-inline form-text border-0 p-2 rounded w-25" value="${originalName}" id="editName_${rowId}">
+        <select name="icon_menu" id="editIcon_${rowId}" class="d-inline form-select rounded" style="width: 25% !important;">
+            <option disabled>انتخاب نماد منو</option>
+        </select>
+        <button class="btn btn-success btn-sm me-2" style="width: 10%!important;" id="saveButton_${rowId}" data-id="${rowId}">ثبت</button>
+        <button class="btn btn-secondary btn-sm"  style="width: 10%!important;"  onclick="cancelEdit(${rowId}, '${originalName}')">لغو</button>`;
+        // درخواست آیکون‌ها
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'admin/includes/get_icons.php', true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                try {
+                    const rawData = JSON.parse(xhr.responseText);
+                    const iconsArray = rawData.icons;
 
-                // تبدیل به فرم ویرایش
-                nameCell.innerHTML = `
-    <input type="text" class="form-text border-0 p-2 rounded w-50" value="${originalName}" id="editName_${rowId}">
-    <select name="icon_menu" id="editIcon_${rowId}" class="form-select rounded mr-2" style="width: 25% !important;">
-        <option disabled>انتخاب نماد منو</option>
-    </select>
-    <button class="btn btn-success btn-sm me-2" id="saveButton_${rowId}" data-id="${rowId}">ثبت</button>
-    <button class="btn btn-secondary btn-sm cancel-button" data-id="${rowId}">لغو</button>
-`;
+                    const selectEl = document.getElementById('editIcon_' + rowId);
+                    iconsArray.forEach(function(icon) {
+                        const selectedAttr = (icon.ic_id == iconId) ? 'selected' : '';
+                        selectEl.innerHTML += `<option value="${icon.ic_id}" ${selectedAttr}>${icon.ic_name}</option>`;
+                    });
+                }
+                catch(e) {
+                    console.error("Error parsing JSON:", e);
+                }
+            }
+            else {
+                console.error('ایراد در دریافت آیکون‌ها', xhr.status);
+            }
+        };
+        xhr.send();
 
-// بارگذاری ایکن‌ها با استفاده از AJAX
-                $.ajax({
-                    url: 'includes/get_icons.php',
-                    method: 'GET',
-                    success: function(data) {
-                        console.log(data); // دیدن داده‌های خام در کنسول
-                        try {
-                            const icons = JSON.parse(data);
-                            icons.forEach(icon => {
-                                const selected = icon.ic_id == originalIconId ? 'selected' : '';
-                                $('#editIcon_' + rowId).append(`<option value="${icon.ic_id}" ${selected}>${icon.ic_name}</option>`);
-                            });
-                        } catch (e) {
-                            console.error("Error parsing JSON:", e);
-                        }
-                    },
-                });
-                // رویداد کلیک برای دکمه ثبت
-                const saveButton = document.getElementById('saveButton_' + rowId);
-                saveButton.addEventListener('click', function() {
-                    const newName = document.getElementById('editName_' + rowId).value;
-                    const newIcon = document.getElementById('editIcon_' + rowId).value;
 
-                    // ارسال داده ها به سرور با AJAX
-                    const xhr = new XMLHttpRequest();
-                    xhr.open('POST', 'update_menu.php', true);
-                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                    xhr.onload = function() {
-                        if (xhr.status === 200) {
-                            nameCell.innerHTML = newName;
-                        } else {
-                            alert('خطا در به‌روزرسانی: ' + xhr.status);
-                            nameCell.innerHTML = originalName; // بازگشت به نام اصلی در صورت خطا
-                        }
-                    };
-                    xhr.send('menu_id=' + encodeURIComponent(rowId) + '&menu_name=' + encodeURIComponent(newName) + '&icon_menu=' + encodeURIComponent(newIcon));
-                });
+        document.getElementById('saveButton_' + rowId).onclick = function() {
+            const newName = document.getElementById('editName_' + rowId).value;
+            const newIcon = document.getElementById('editIcon_' + rowId).value;
 
-                // رویداد کلیک برای دکمه لغو
-                const cancelButton = document.querySelector('.cancel-button[data-id="' + rowId + '"]');
-                cancelButton.addEventListener('click', function() {
-                    nameCell.innerHTML = originalName; // بازگشت به نام اصلی
-                });
-            });
-        });
-    });
+            const xhrPost = new XMLHttpRequest();
+            xhrPost.open('POST', 'admin/includes/update_menu.php', true);
+            xhrPost.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhrPost.onload = function() {
+                if (xhrPost.status === 200) {
+                    nameCell.innerHTML = newName;
+                } else {
+                    alert('خطا در به‌روزرسانی: ' + xhrPost.status);
+                    nameCell.innerHTML = originalName;
+                }
+            };
+            const params = 'menu_id=' + encodeURIComponent(rowId) +
+                '&menu_name=' + encodeURIComponent(newName) +
+                '&icon_menu=' + encodeURIComponent(newIcon);
+            xhrPost.send(params);
+        };
+    }
+
+    // تابع لغو ویرایش
+    function cancelEdit(rowId, originalName) {
+        const nameCell = document.getElementById('name_' + rowId);
+        nameCell.innerHTML = originalName;
+    }
 </script>

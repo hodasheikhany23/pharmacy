@@ -35,7 +35,7 @@ $errors = [];
                     $errors['duplicate'] = 'این محصول قبلا در سامانه اضافه شده است.';
                 }
                 else{
-                    $resultAdd = $link->query("INSERT INTO drogs (drg_name, drg_company, drg_price, drg_available, drg_category_id, drg_caption, drg_image) VALUES ('". $_POST['name'] ."', '". $_POST['company'] ."', '". $_POST['price'] ."', '". $_POST['available'] ."', '". $_POST['category'] ."', '". $_POST['content'] ."','".$fileName."')");
+                    $resultAdd = $link->query("INSERT INTO drogs (drg_name, drg_company, drg_price, drg_available, drg_category_id, drg_caption, drg_image,drg_usage) VALUES ('". $_POST['name'] ."', '". $_POST['company'] ."', '". $_POST['price'] ."', '". $_POST['available'] ."', '". $_POST['category'] ."', '". $_POST['content'] ."','".$fileName."','".$_POST['usage'] ."')");
                     if($link->errno == 0){
                         $errors['add_user'] = "محصول جدید با موفقیت ثبت شد";
                     }
@@ -140,7 +140,11 @@ $errors = [];
             $result_submenu = $link->query("SELECT * FROM category");
             if ($result_submenu->num_rows > 0) {
                 while ($row_submenu = $result_submenu->fetch_assoc()) {
-                    echo '<option value="' . $row_submenu['cat_id'] . '">' . $row_submenu['cat_name'] . '</option>';
+                    $result_menu = $link->query("SELECT * FROM sub_menu where subm_id = '".$row_submenu['cat_subm_id']."'");
+                    if ($result_menu->num_rows > 0) {
+                        $row_menu = $result_menu->fetch_assoc();
+                    }
+                    echo '<option value="' . $row_submenu['cat_id'] . '">' . $row_submenu['cat_name'] . ' __  '.$row_menu['subm_name'].'</option>';
                 }
             }
             echo '</select>';
@@ -150,6 +154,13 @@ $errors = [];
             <label for="content" class="form-label">توضیحات    </label>
             <div class="mb-3">
                 <textarea class="textarea" name="content"
+                          style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+            </div>
+        </div>
+        <div class="card-body pad">
+            <label for="usage" class="form-label">طریقه مصرف  </label>
+            <div class="mb-3">
+                <textarea class="textarea" name="usage"
                           style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
             </div>
         </div>

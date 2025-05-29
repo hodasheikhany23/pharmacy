@@ -23,6 +23,12 @@ body {
 li {
     list-style: none;
 }
+.modal-backdrop.show {
+    background-color: rgba(0, 0, 0, 0.4) !important;
+}
+.modal-backdrop {
+    transition: background-color 0.2s ease !important;
+}
 
 .alert {
     padding: 0 !important;
@@ -44,8 +50,8 @@ a {
     --color-2: #0D0C3A;
     --color-3: #1A2569;
     --color-4: #2A4B95;
-    --color-main: #3C7BBF;
-    --color-6: rgba(95, 137, 222, 0.51);
+    --color-main: rgb(60, 123, 191);
+    --color-6: rgb(95, 137, 222);
 }
 
 /* SECTION TITLE */

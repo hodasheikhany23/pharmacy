@@ -14,16 +14,38 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 </head>
+<?php
+$resultPage = $link->query("SELECT * FROM pages WHERE pg_menu_id = '" . $_GET['md'] . "'");
+if ($resultPage->num_rows > 0) {
+    $rowPage = $resultPage->fetch_assoc();
+}
+$resultPageDe = $link->query("SELECT * FROM page_detail where pgde_page_id = '" . $rowPage['pg_id'] . "'");
+if ($resultPageDe->num_rows != 0) {
+    $row = $resultPageDe->fetch_assoc();
+}
+
+if($rowPage['pg_status'] == "2"){
+    require_once "work.php";
+}
+else{
+
+$result_info = $link->query("SELECT * FROM info");
+if($result_info->num_rows > 0) {
+    $row_info = $result_info->fetch_assoc();
+}
+?>
 <div class="container about">
     <div class="d-flex justify-content-end about-section" style="color: white !important;">
-        <img class="aboutpage-img" src="img/doctor.jpg">
+        <img class="aboutpage-img" src="<?php echo $row_info['info_doctor_image']; ?>" alt="aboutpage">
         <div class="d-flex flex-column about-text-container w-50">
             <div class="section-title">
-                <p> داروخانه آنلاین</p>
+                <p>داروخانه آنلاین
+                </p>
             </div>
-            <p class="about-txt pt-5 text-color-white">
-                لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد
-                لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد
+            <p class="about-txt pt-3 text-color-white">
+                <?php
+                echo $row_info['info_about'];
+                ?>
             </p>
         </div>
     </div>
@@ -37,19 +59,27 @@
             <div class="about-txt pt-4">
                 <p class="mytext-bold" style="font-size: 16px; color: var(--color-2)">
                     <i class="bi bi-telephone mx-2"></i>
-                    0909090900900
+                    <?php
+                    echo $row_info['info_phone'];
+                    ?>
                 </p>
                 <p class="mytext-bold" style="font-size: 16px; color: var(--color-2)">
                     <i class="bi bi-envelope-at mx-2"></i>
-                    ddff.fdfdfd@gmail.com
+                    <?php
+                    echo $row_info['info_email'];
+                    ?>
                 </p>
                 <p class="mytext-bold" style="font-size: 16px; color: var(--color-2)">
                     <i class="bi bi-telegram mx-2"></i>
-                    @vfvsfvfvf
+                    <?php
+                    echo $row_info['info_telegram'];
+                    ?>
                 </p>
                 <p class="mytext-bold" style="font-size: 16px; color: var(--color-2)">
                     <i class="bi bi-whatsapp mx-2"></i>
-                    @ffrfefw
+                    <?php
+                    echo $row_info['info_whatsapp'];
+                    ?>
                 </p>
             </div>
 
@@ -57,160 +87,43 @@
         <img class="aboutpage-img2" src="img/reception.jpg">
     </div>
 </div>
-<div class="container">
-    <div class="section-title">
-        <p>  مدارک و مجوز ها </p>
+<div class="container mb-5 pb-5">
+    <div class="section-title mb-4">
+        <p>مدارک و مجوز ها</p>
     </div>
-    <div class="row text-center text-lg-start">
-        <div class="col-lg-3 col-md-4 col-6">
-            <a href="#" class="d-block mb-4 h-100">
-                <img class="img-fluid img-thumbnail gallery-img" src="img/salamat.png" alt="">
-            </a>
-        </div>
-        <div class="col-lg-3 col-md-4 col-6">
-            <a href="#" class="d-block mb-4 h-100">
-                <img class="img-fluid img-thumbnail gallery-img" src="img/enamad.png" alt="">
-            </a>
-        </div>
-        <div class="col-lg-3 col-md-4 col-6">
-            <a href="#" class="d-block mb-4 h-100">
-                <img class="img-fluid img-thumbnail gallery-img" src="img/parvane.jpg" alt="">
-            </a>
-        </div>
-        <div class="col-lg-3 col-md-4 col-6">
-            <a href="#" class="d-block mb-4 h-100">
-                <img class="img-fluid img-thumbnail gallery-img" src="img/salamat.png" alt="">
-            </a>
-        </div>
-        <div class="col-lg-3 col-md-4 col-6">
-            <a href="#" class="d-block mb-4 h-100">
-                <img class="img-fluid img-thumbnail gallery-img" src="img/parvane.jpg" alt="">
-            </a>
-        </div>
-        <div class="col-lg-3 col-md-4 col-6">
-            <a href="#" class="d-block mb-4 h-100">
-                <img class="img-fluid img-thumbnail gallery-img" src="img/parvane.jpg" alt="">
-            </a>
-        </div>
-    </div>
-</div>
-<div class="ltn__feature-area pb-90">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="section-title" style="margin-top: 0 !important;">
-                    <p class="section-title text-dark">ویژگی های اصلی</p>
-                </div>
-            </div>
-        </div>
-        <div class="row ltn__custom-gutter">
-            <div class="col-lg-3 col-sm-6 col-12">
-                <div class="ltn__feature-item ltn__feature-item-6 text-center">
-                    <div class="ltn__feature-icon">
-                        <i class="bi bi-truck"></i>
-                    </div>
-                    <div class="ltn__feature-info">
-                        <h4><a href="service-details.html">تحویل رایگان</a></h4>
-                        <p>
-                            لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان
-                            گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است
-                        </p>
+    <div class="row justify-content-center mb-5 pb-5">
+        <?php
+        $result_license = $link->query("SELECT * FROM license");
+        $counter = 0;
+        while($row_license = $result_license->fetch_assoc()) {
+            $counter++;
+            ?>
+            <!-- هر کارت -->
+            <div class="col-md-3 mb-4 d-flex align-items-stretch">
+                <div class="card w-100 shadow-sm border-0">
+                    <!-- تصویر در قسمت بالا -->
+                    <img src="<?php echo $row_license['lic_image']; ?>" class="card-img-top" style="object-fit: cover; height: 150px;" alt=""/>
+
+                    <!-- قسمت پایین شامل عنوان و لینک -->
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <h5 class="card-title text-center"><?php echo $row_license['lic_name']; ?></h5>
+                        <a href="#" class="btn button btn-primary mx-auto mt-3">
+                            <i class="bi bi-link-45deg"></i>
+                            مشاهده
+                        </a>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-sm-6 col-12">
-                <div class="ltn__feature-item ltn__feature-item-6 text-center active">
-                    <div class="ltn__feature-icon">
-                        <i class="bi bi-shield-check"></i>
-                    </div>
-                    <div class="ltn__feature-info">
-                        <h4><a href="service-details.html">100% برگشت نقدی</a></h4>
-                        <p>
-                            لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان
-                            گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 col-12">
-                <div class="ltn__feature-item ltn__feature-item-6 text-center">
-                    <div class="ltn__feature-icon">
-                        <i class="bi bi-check-all"></i>
-                    </div>
-                    <div class="ltn__feature-info">
-                        <h4><a href="service-details.html">محصول باکیفیت</a></h4>
-                        <p>
-                            لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان
-                            گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 col-12">
-                <div class="ltn__feature-item ltn__feature-item-6 text-center">
-                    <div class="ltn__feature-icon">
-                        <i class="bi bi-headset"></i>
-                    </div>
-                    <div class="ltn__feature-info">
-                        <h4><a href="service-details.html">پشتیبانی 24/7</a></h4>
-                        <p>
-                            لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان
-                            گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+            <?php
+            // هر 4 کارت ردیف بندی
+            if($counter % 4 == 0) {
+                echo '<div class="w-100"></div>'; // خط جدید برای هر 4 کارت
+            }
+        }
+        ?>
     </div>
 </div>
-<div class="pb-5 mb-5">
-    <div class="container mb-5">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="section-title" style="margin-top: 0 !important;">
-                    <p class="text-dark">پرسش های متداول</p>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="accordion" id="accordionExample">
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            سوال اول
-                        </button>
-                    </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
-                            لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                             سوال 2
-                        </button>
-                    </h2>
-                    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
-                            لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                            سوال 3
-                        </button>
-                    </h2>
-                    <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
-                            لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<?php
+}
+?>

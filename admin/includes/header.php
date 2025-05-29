@@ -41,12 +41,6 @@
             <div class="search-box">
                 <input type="text" class="search-input form-control" placeholder="جست و جو...">
                 <i class="fas fa-search search-icon"></i>
-                <div class="suggestions">
-                    <div class="recent-searches">جست و جو های اخیر</div>
-                    <div class="suggestion-item"><i class="fas fa-history"></i> مورد 1</div>
-                    <div class="suggestion-item"><i class="fas fa-history"></i> مورد 2</div>
-                    <div class="suggestion-item"><i class="fas fa-fire"></i> بیشترین جست و جو: مورد 4</div>
-                </div>
             </div>
         </div>
         <ul class="navbar-nav ml-auto" id="massage-navbar">
@@ -67,12 +61,19 @@
 <div class="sidebar active d-flex flex-column" id="sidebar" style="width: 16rem !important;"> <!-- added active class for default open -->
     <button class="close-sidebar" id="close-sidebar"><i class="fa-solid fa-xmark"></i></button>
     <div class="sidebar-header" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true" title="ویرایش پروفایل">
-        <a href="index.php?page=profile">
+        <a href="index.php?pg=login&page=profile">
             <img src="admin/img/user.png" alt="Profile" class="profile-pic">
             <span>
             <?php
             echo $_SESSION['username'];
             ?>
+        </span>
+        </a>
+    </div>
+    <div class="sidebar-header" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true" title="مشخصات داروخانه" style="background-color: #3C7BBF66">
+        <a href="index.php?pg=login&page=info"><span style="color: var(--color-2)">
+                <i class="bi bi-info-circle me-1"></i>
+           مشخصات داروخانه
         </span>
         </a>
     </div>
@@ -83,6 +84,9 @@
     <a class="sidebar-item" href="index.php?pg=login&page=menus">
         <i class="fa-solid fa-list"></i>
         منو ها
+    </a>
+    <a class="sidebar-item" href="index.php?pg=login&page=categories">
+        <i class="fa-solid fa-grip"></i> دسته بندی دارو ها
     </a>
     <a class="sidebar-item menu-sub-parent" onclick="sub()" href="index.php?pg=login&page=pages">
         <i class="fa-solid fa-file"></i>
@@ -95,9 +99,6 @@
     <a class="sidebar-item" href="index.php?pg=login&page=blogs">
         <i class="fa-solid fa-bookmark"></i>
         مقالات
-    </a>
-    <a class="sidebar-item" href="index.php?pg=login&page=categories">
-        <i class="fa-solid fa-grip"></i> دسته بندی دارو ها
     </a>
     <a class="sidebar-item" href="index.php?pg=login&page=users">
         <i class="fa-solid fa-users"></i> کاربران
@@ -112,13 +113,13 @@
                    <i class="fa-solid fa-tag"></i>
                    ایجاد تخفیف
             </a>
-            <a class="sidebar-item" href="index.php?pg=login&page=delivermethod">
-                <i class="fa-solid fa-cart-flatbed-suitcase"></i>
-                شیوه ارسال
+            <a class="sidebar-item" href="index.php?pg=login&page=slider">
+                <i class="bi bi-image"></i>
+                اسلایدر
             </a>
-            <a class="sidebar-item" href="index.php?pg=login&page=paymentmethod" style="background-color: transparent !important; color: #1b1b1b">
-                <i class="fa-solid fa-credit-card"></i>
-                شیوه پرداخت
+            <a class="sidebar-item" href="index.php?pg=login&page=banners" style="background-color: transparent !important; color: #1b1b1b">
+                <i class="bi bi-file-image"></i>
+                بنر ها
             </a>
         </div>
     </div>
@@ -157,48 +158,23 @@
 
     document.addEventListener("DOMContentLoaded", function() {
         var collapsemore = document.getElementById('collapsemore');
-        var sidebarItemMore = document.querySelector('.sidebar-item-more');
+        var sidebarItemMore = document.getElementsByClassName('sidebar-item-more');
 
         sidebarItemMore.addEventListener("click", function() {
-            collapsemore.classList.toggle('show');
+            if(collapsemore.classList.contains('show')){
+                collapsemore.classList.remove('show');
+            }
+            else {
+                collapsemore.classList.add('show');
+            }
         });
     });
+
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const toggleCollapse = document.getElementById('toggleCollapse');
-        const collapseIcon = document.getElementById('collapseIcon');
-        const collapsemore = document.getElementById('collapsemore');
-
-        toggleCollapse.addEventListener("click", function() {
-            // بررسی وضعیت کالاپس برای تغییر آیکون
-            if (collapsemore.classList.contains('show')) {
-                collapseIcon.classList.remove('fa-angle-up');
-                collapseIcon.classList.add('fa-angle-down');
-                collapsemore.classList.remove('show'))
-            } else {
-                collapseIcon.classList.remove('fa-angle-down');
-                collapseIcon.classList.add('fa-angle-up');
-            }
-        });
-
-        // اضافه کردن رویداد برای تغییر آیکون در صورتی که دیگر باز شود
-        collapsemore.addEventListener('shown.bs.collapse', function () {
-            collapseIcon.classList.remove('fa-angle-down');
-            collapseIcon.classList.add('fa-angle-up');
-        });
-
-        // اضافه کردن رویداد برای تغییر آیکون در صورتی که بسته شود
-        collapsemore.addEventListener('hidden.bs.collapse', function () {
-            collapseIcon.classList.remove('fa-angle-up');
-            collapseIcon.classList.add('fa-angle-down');
-        });
-    });
-</script>
 </body>
 
 </html>  

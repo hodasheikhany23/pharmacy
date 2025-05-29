@@ -35,6 +35,24 @@
         <?php
         if(isset($_GET['page'])){
             switch ($_GET['page']){
+                case 'info':
+                    require_once "admin/includes/info/show.php";
+                    break;
+                case 'banners':
+                    require_once "admin/includes/banner/banner.php";
+                    break;
+                case 'editbanner':
+                    require_once "admin/includes/banner/update.php";
+                    break;
+                case 'slider':
+                    require_once "admin/includes/slider/slider.php";
+                    break;
+                case 'editslider':
+                    require_once "admin/includes/slider/update.php";
+                    break;
+                case 'addslider':
+                    require_once "admin/includes/slider/add.php";
+                    break;
                 case 'users':
                     require_once "admin/includes/users.php";
                     break;
@@ -79,6 +97,30 @@
                     break;
                 case 'dashboard':
                     require_once "admin/includes/dashboard.php";
+                    break;
+                case 'createoff':
+                    require_once "admin/includes/off/off.php";
+                    break;
+                case 'editoff':
+                    require_once "admin/includes/off/update.php";
+                    break;
+                case 'addoff':
+                    require_once "admin/includes/off/add.php";
+                    break;
+                case 'addoffpro':
+                    require_once "admin/includes/off/addpo.php";
+                    break;
+                case 'blogs':
+                    require_once "admin/includes/blog/list.php";
+                    break;
+                case 'addblog':
+                    require_once "admin/includes/blog/add.php";
+                    break;
+                case 'editblogs':
+                    require_once "admin/includes/blog/update.php";
+                    break;
+                case 'blogcontent':
+                    require_once "admin/includes/blog/content.php";
                     break;
                 default:
                     require_once "admin/includes/header.php";

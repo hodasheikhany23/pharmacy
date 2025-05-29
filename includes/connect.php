@@ -1,5 +1,6 @@
 <?php
     defined('site') or die('Acces denied');
+    date_default_timezone_set("Asia/Tehran");
 
     $link = new mysqli("localhost", "root", "", "pharmacy_db");
     if ($link===false) {
@@ -7,7 +8,7 @@
     }
     $link->query("set names utf8");
     mb_internal_encoding("UTF-8");
-
+    require_once "time/jdf.php";
     function clean_id($id)
     {
         if (!is_numeric($id)) {
@@ -16,6 +17,11 @@
         if ($id < 0) {
             die('Acces denied');
         }
+        return $id;
+    }
+    function dateFormat($value){
+        $value=jdate('d F Y',$value);
+        return $value;
     }
     function clean_data($value)
     {

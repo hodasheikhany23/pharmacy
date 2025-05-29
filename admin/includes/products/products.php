@@ -77,16 +77,31 @@ if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
                     while($rowDrog=$resultDrogs -> fetch_assoc()){
                         echo '<tr>';
                         echo '<td class="px-4 py-2">'.$rowDrog['drg_id'].'</td>';
-                        echo '<td class="px-4 py-2 w-25">'.$rowDrog['drg_name'].'</td>';
-                        echo '<td class="px-4 py-2 w-25">'.$rowDrog['drg_company'].'</td>';
-                        echo '<td class="px-4 py-2 w-25">'.$rowDrog['drg_price'].'</td>';
-                        echo '<td class="px-4 py-2 w-25">'.$rowDrog['drg_caption'].'</td>';
-                        echo '<td class="px-4 py-2 w-25">'.$rowDrog['drg_available'].'</td>';
+                        echo '<td class="px-4 py-2 w-auto">'.$rowDrog['drg_name'].'</td>';
+                        echo '<td class="px-4 py-2 w-auto">'.$rowDrog['drg_company'].'</td>';
+                        echo '<td class="px-4 py-2 w-auto">'.$rowDrog['drg_price'].'</td>';
+                        $caption = $rowDrog['drg_caption'];
+                        $maxLength = 22;
+
+                        if(strlen($caption) > $maxLength){
+                            $caption = substr($caption, 0, $maxLength) . '...';
+                        }
+                        echo '<td class="px-4 py-2 w-auto">'.$caption.'</td>';
+                        if($rowDrog['drg_available']>=5){
+                            $av = '<span class="badge bg-success p-2">'.$rowDrog['drg_available'].' </span>';
+                        }
+                        elseif ($rowDrog['drg_available']<5 && $rowDrog['drg_available']>0){
+                            $av = '<span class="badge bg-warning p-2">'.$rowDrog['drg_available'].' </span>';
+                        }
+                        elseif ($rowDrog['drg_available']==0){
+                            $av = '<span class="badge bg-danger p-2">ناموجود</span>';
+                        }
+                        echo '<td class="px-4 py-2 w-auto">'.$av.'</td>';
                         $res = $link->query("SELECT * FROM category WHERE cat_id = '".$rowDrog['drg_category_id']."'");
                         if($res->num_rows != 0){
                             $row = $res -> fetch_assoc();
                         }
-                        echo '<td class="px-4 py-2 w-25">'.$row['cat_name'].'</td>';
+                        echo '<td class="px-4 py-2 w-auto">'.$row['cat_name'].'</td>';
                         echo '<td class="d-flex align-content-center px-4 py-2">'
                             . '<a class="btn btn-info text-white me-2" title="ویرایش" href="index.php?pg=login&page=updateproducts&id=' . $rowDrog['drg_id'] . '">'
                             . '<i class="fa-solid fa-pen-to-square"></i>'

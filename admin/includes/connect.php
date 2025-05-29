@@ -9,6 +9,7 @@ $link = new mysqli("localhost", "root", "", "pharmacy_db");
     $link->query("set names utf8");
     mb_internal_encoding("UTF-8");
 
+if (!function_exists('clean_id')){
     function clean_id($id)
     {
         if (!is_numeric($id)) {
@@ -19,6 +20,7 @@ $link = new mysqli("localhost", "root", "", "pharmacy_db");
         }
         return $id;
     }
+}
     function clean_data($value)
     {
         $value = trim($value);

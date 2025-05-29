@@ -76,13 +76,13 @@ if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
                         $rowMenu = $resultMenu -> fetch_assoc();
                         switch ($rowPage['pg_type']) {
                             case 1:
-                                $pg_type = "بنر ابتدای صفحه";
+                                $pg_type = '<span class="badge bg-info p-2">بنر ابتدای صفحه</span>';
                                 break;
                             case 2:
-                                $pg_type = "سایدبار";
+                                $pg_type = '<span class="badge bg-warning p-2"> سایدبار  </span>';
                                 break;
                             case 3:
-                                $pg_type = "ساده";
+                                $pg_type = '<span class="badge bg-secondary p-2"> ساده </span>';
                                 break;
                             case 4:
                                 $pg_type = "سایدبار و بنر ";
@@ -91,15 +91,15 @@ if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
                                 $pg_type = " فرم تماس ";
                                 break;
                             case 6:
-                                $pg_type = " درباره ما  ";
+                                $pg_type = '<span class="badge bg-success p-2"> درباره ما </span>';
                                 break;
                         }
                         switch ($rowPage['pg_status']) {
                             case '1':
-                                $pg_status = "فعال";
+                                $pg_status = '<span class="badge bg-success p-2">فعال</span>';
                                 break;
                             case '2':
-                                $pg_status = "غیرفعال";
+                                $pg_status = '<span class="badge bg-danger p-2">غیرفعال</span>';
                                 break;
                         }
                         echo '<tr>';
@@ -111,14 +111,23 @@ if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
                         echo '<td class="d-flex align-content-center px-4 py-2">'
                             . '<a class="btn btn-info text-white me-2" title="ویرایش" href="index.php?pg=login&page=editpages&id=' . $rowPage['pg_id'] . '">'
                             . '<i class="fa-solid fa-pen-to-square"></i>'
-                            . '</a>'
-                            . '<a class="btn btn-danger text-white me-2" title="حذف" href="index.php?pg=login&page=pages&action=delete&id='.$rowPage['pg_id'].'">'
-                            . '<i class="fa-solid fa-trash"></i>'
-                            . '</a>'
-                            . '<a class="btn btn-warning text-white me-2" title="محتوای صفحه" href="index.php?pg=login&page=pagecontent&id='.$rowPage['pg_id'].'">'
-                            . '<i class="fa-solid fa-bars-staggered"></i>'
-                            . '</a>'
-                            . '</td>';
+                            . '</a>';
+                            if($rowPage['pg_id'] != 6){
+                                echo  '<a class="btn btn-danger text-white me-2" title="حذف" href="index.php?pg=login&page=pages&action=delete&id='.$rowPage['pg_id'].'">'
+                                . '<i class="fa-solid fa-trash"></i>'
+                                . '</a>';
+                                echo '<a class="btn btn-warning text-white me-2" title="محتوای صفحه" href="index.php?pg=login&page=pagecontent&id='.$rowPage['pg_id'].'">'
+                                    . '<i class="fa-solid fa-bars-staggered"></i>'
+                                    . '</a>'
+                                    . '</td>';
+                            }
+                            else{
+                                echo '<a class="btn btn-warning text-white me-2" title="محتوای صفحه" href="index.php?pg=login&page=info">'
+                                    . '<i class="fa-solid fa-bars-staggered"></i>'
+                                    . '</a>'
+                                    . '</td>';
+                            }
+
                     }
                 }
                 ?>
