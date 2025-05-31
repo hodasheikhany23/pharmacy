@@ -4,7 +4,9 @@ defined('site') or die('Access denied');
 if (!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1') {
     die("Please <a href='index.php?pg=login'>login</a> to access this page");
 }
-
+if(!in_array('11',$perm) && !in_array('14',$perm)) {
+    die("شما مجوز دسترسی به این صفحه را ندارید");
+}
 $errors = [];
 
 if (isset($_POST['update'])) {

@@ -3,7 +3,9 @@
         die("Please <a href='index.php?pg=login'>login</a> to access this page");
     }
     defined('site') or die('Acces denied');
-
+if(!in_array('4',$perm)) {
+    die("شما مجوز دسترسی به این صفحه را ندارید");
+}
 $errors = [];
     if(isset($_POST['submit'])){
         if(isset($_POST['name'])){

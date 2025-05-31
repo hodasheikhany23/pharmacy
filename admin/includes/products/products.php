@@ -4,6 +4,9 @@
 if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
     die("Please <a href='index.php?pg=login'>login</a> to access this page");
 }
+if(!in_array('4',$perm) && !in_array('5',$perm) && !in_array('6',$perm)) {
+    die("شما مجوز دسترسی به این صفحه را ندارید");
+}
     $errors = [];
     if (isset($_GET['action'])) {
         switch ($_GET['action']) {
@@ -102,14 +105,18 @@ if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
                             $row = $res -> fetch_assoc();
                         }
                         echo '<td class="px-4 py-2 w-auto">'.$row['cat_name'].'</td>';
-                        echo '<td class="d-flex align-content-center px-4 py-2">'
-                            . '<a class="btn btn-info text-white me-2" title="ویرایش" href="index.php?pg=login&page=updateproducts&id=' . $rowDrog['drg_id'] . '">'
-                            . '<i class="fa-solid fa-pen-to-square"></i>'
-                            . '</a>'
-                            . '<a class="btn btn-danger text-white me-2" title="حذف" href="index.php?pg=login&page=products&action=delete&id='.$rowDrog['drg_id'].'">'
+                        if(in_array('4',$perm)) {
+                            echo '<td class="d-flex align-content-center px-4 py-2">'
+                                . '<a class="btn btn-info text-white me-2" title="ویرایش" href="index.php?pg=login&page=updateproducts&id=' . $rowDrog['drg_id'] . '">'
+                                . '<i class="fa-solid fa-pen-to-square"></i>'
+                                . '</a>';
+                        }
+                        if(in_array('5',$perm)) {
+                            echo  '<a class="btn btn-danger text-white me-2" title="حذف" href="index.php?pg=login&page=products&action=delete&id='.$rowDrog['drg_id'].'">'
                             . '<i class="fa-solid fa-trash"></i>'
-                            . '</a>'
-                            . '</td>';
+                            . '</a>';
+                        }
+                            echo '</td>';
                     }
                 }
                 ?>

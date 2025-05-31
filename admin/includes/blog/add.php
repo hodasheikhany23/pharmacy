@@ -3,6 +3,9 @@ defined('site') or die('Acces denied');
 if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
     die("Please <a href='index.php?pg=login'>login</a> to access this page");
 }
+if(!in_array('9',$perm)) {
+    die("شما مجوز دسترسی به این صفحه را ندارید");
+}
 $errors = [];
 if(isset($_POST['submit'])){
     if (isset($_FILES['image']) && isset($_POST['name']) && isset($_POST['tag'])) {

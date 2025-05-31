@@ -1,8 +1,10 @@
 <?php
 defined('site') or die('Acces denied');
-
 if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
     die("Please <a href='index.php?pg=login'>login</a> to access this page");
+}
+if(!in_array('3',$perm)) {
+    die("شما مجوز دسترسی به این صفحه را ندارید");
 }
 $errors = [];
 
@@ -95,31 +97,38 @@ if($resultSubMenu ->num_rows != 0){
                 echo '<tr id="row_'.$rowMenu['subm_id'].'">';
                 echo '<td class="px-4 py-2">'.$rowMenu['subm_id'].'</td>';
                 echo '<td class="px-4 py-2" id="name_'.$rowMenu['subm_id'].'">'.$rowMenu['subm_name'].'</td>';
-                echo '<td class="d-flex align-content-center px-4 py-2">'
-                    .'<button class="edit-button btn btn-warning text-white me-2"
+                echo '<td class="d-flex align-content-center px-4 py-2">';
+                    if(in_array(1, $perm)){
+                        echo '<button class="edit-button btn btn-warning text-white me-2"
                         onclick="edit(' . $rowMenu['subm_id'] . ')"
                         data-id="' . $rowMenu['subm_id'] . '"
                         data-icon="' . $rowMenu['subm_id'] . '"
                         id="edit-button-' . $rowMenu['subm_id'] . '">
                         <i class="fa-solid fa-edit"></i>
-                    </button>'
-                    . '<a class="btn btn-danger text-white me-2" title="حذف" href="index.php?pg=login&page=listsub_menu&id='.$rowMenu['subm_menu_id'].'&action=deletesub&subid='.$rowMenu['subm_id'].'">'
-                    . '<i class="fa-solid fa-trash"></i>'
-                    . '</a>'
-                    . '</td>';
+                        </button>';
+                    }
+                    if(in_array(2, $perm)){
+                        echo '<a class="btn btn-danger text-white me-2" title="حذف" href="index.php?pg=login&page=listsub_menu&id='.$rowMenu['subm_menu_id'].'&action=deletesub&subid='.$rowMenu['subm_id'].'">'
+                        . '<i class="fa-solid fa-trash"></i>'
+                        . '</a>'
+                        . '</td>';
+                    }
+
                 echo '</tr>';
             }
             echo '<tr>';
             echo '<td class="px-4 py-2"></td>';
-            echo '<td class="px-4 py-2"><form method="post" action="" class="form-inline"><input name="sub_name" class="form-text border-0 p-2 rounded w-50" type="text" value="منوی جدید">
+            if(in_array(1, $perm)) {
+                echo '<td class="px-4 py-2"><form method="post" action="" class="form-inline"><input name="sub_name" class="form-text border-0 p-2 rounded w-50" type="text" value="منوی جدید">
                     <button name="submit_submenu" class="btn btn-info text-white me-2 w-25" title="ثبت">
                     <i class="fa-solid fa-plus me-2" ></i>
                      ثبت
                     </button>
                     </form></td>';
-            echo '<td class="d-flex align-content-center py-2">'
-                . '</td>';
-            echo '</tr>';
+                echo '<td class="d-flex align-content-center py-2">'
+                    . '</td>';
+                echo '</tr>';
+            }
             ?>
             </tbody>
         </table>

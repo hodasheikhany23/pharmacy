@@ -3,7 +3,9 @@ if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
     die("Please <a href='index.php?pg=login'>login</a> to access this page");
 }
 defined('site') or die('Acces denied');
-
+if(!in_array('1',$perm) && !in_array('2',$perm) && !in_array('3',$perm)){
+    die("شما دسترسی به این صفحه ندارید");
+}
 $errors = [];
 $resultMenu = $link -> query("SELECT * FROM menu");
 if($resultMenu ->num_rows != 0){

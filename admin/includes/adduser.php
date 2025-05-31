@@ -1,8 +1,10 @@
 <?php
 defined('site') or die('Access denied');
-
 if (!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1') {
     die("Please <a href='index.php?pg=login'>login</a> to access this page");
+}
+if(!in_array('11',$perm) && !in_array('14',$perm)) {
+    die("شما مجوز دسترسی به این صفحه را ندارید");
 }
 $errors = [];
 if (isset($_POST['submit'])) {
@@ -62,8 +64,20 @@ if (isset($_POST['submit'])) {
     if (empty($errors)) {
         $sql = "INSERT INTO users (u_username, u_password, u_phone, u_address, u_is_admin) VALUES ('" . $username . "','" . md5($password) . "','" . $phone . "','" . $address . "'," . $is_admin . ")";
         $link->query($sql);
+        $user_id = $link->insert_id;
         if ($link->errno == 0) {
             $errors['add_user'] = "کاربر با موفقیت ثبت شد .";
+            if(isset($_POST['perm']) && is_array($_POST['perm'])) {
+                foreach ($_POST['perm'] as $perm) {
+                    $result_role = $link->query("INSERT INTO admin_role (ar_user_id, ar_permission_id) VALUES ('".$user_id."','".$perm."')");
+                    if ($link->errno == 0) {
+                        $errors['add_user'] = "کاربر با موفقیت ثبت شد .";
+                    }
+                    else{
+                        $errors['add_user_error'] = "خطا در ذخیره اطلاعات. لطفاً مجدداً تلاش کنید.";
+                    }
+                }
+            }
         }
         else {
             $errors['add_user_error'] = "خطا در ذخیره اطلاعات. لطفاً مجدداً تلاش کنید.";
@@ -152,10 +166,18 @@ if (isset($_POST['submit'])) {
                 <label for="address" class="form-label">آدرس</label>
                 <textarea name="address" class="form-control" id="address" rows="3"></textarea>
             </div>
-            <div class="mb-3 form-check">
-                <input name="is_admin" type="checkbox" class="form-check-input" id="isAdmin">
+            <?php
+            if(in_array('14', $perm)){
+                echo '<div class="mb-3 form-check">
+                <input name="is_admin" type="checkbox" class="form-check-input" id="isAdmin" onchange="roles()">
                 <label class="form-check-label" for="isAdmin">کاربر ادمین است</label>
             </div>
+            <div class="mb-3 form-check" id="role_box">
+
+            </div>';
+            }
+            ?>
+
             <button type="submit" name="submit" href="" class="button btn btn-success">
                 <i class="fa-solid fa-plus"></i>
                 <span style="margin-left: 2px;">| </span> افزودن
@@ -164,3 +186,45 @@ if (isset($_POST['submit'])) {
     </div>
 </div>
 
+<script>
+    function roles(){
+        let div = document.getElementById('role_box');
+        let main_check = document.getElementById('isAdmin');
+        if(main_check.checked){
+            div.innerHTML = '<div class="mb-3 form-check d-flex flex-row flex-wrap gap-3">'+
+                '<?php
+
+                    $result_permissions = $link->query("SELECT * FROM permissions where per_parent = '0' order by per_id DESC");
+                    while($row_permissions = $result_permissions->fetch_assoc()){
+                        echo '<div class="card rounded border-0 p-3" style="width: 47%">';
+                        echo '<div class="m-3"><input onchange="check('.$row_permissions['per_id'].',)" name="perm[]" value="'.$row_permissions['per_id'].'" type="checkbox" class="form-check-input" id="perm_'.$row_permissions['per_id'].'">';
+                        echo '<label class="form-check-label" for="perm_'.$row_permissions['per_id'].'"> '.$row_permissions['per_name'].'</label>';
+                        echo '<p style="font-size: 0.8em; color: #777; margin: 0 0 10px 25px;">'.$row_permissions['per_caption'].'</p></div>';
+                        $result_child = $link->query("SELECT * FROM permissions where per_parent = '".$row_permissions['per_id']."'");
+                        while($row_child = $result_child->fetch_assoc()){
+                            echo '<div style="margin-right: 24px;">';
+                            echo '<input name="perm[]" value="'.$row_child['per_id'].'" type="checkbox" class="form-check-input child_of_'.$row_permissions['per_id'].'" data-parent="'.$row_permissions['per_id'].'" id="perm_'.$row_child['per_id'].'">';
+                            echo '<label class="form-check-label" for="perm[]"> '.$row_child['per_name'].'</label>';
+                            echo '<p style="font-size: 0.8em; color: #777; margin: 0 0 10px 25px;">'.$row_child['per_caption'].'</p>';
+                            echo '</div>';
+                        }
+                        echo '</div>';
+                    }
+                    ?>'+
+                '</div>';
+
+        }
+        else {
+            div.innerHTML='';
+        }
+
+    }
+    function check(id) {
+        let parent = document.getElementById('perm_' + id);
+        const children = document.querySelectorAll('.child_of_' + id);
+        children.forEach(childCheckbox => {
+            childCheckbox.checked = parent.checked;
+        });
+    }
+
+</script>

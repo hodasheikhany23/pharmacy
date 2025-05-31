@@ -9,11 +9,11 @@
     <title>admin_Dashboard</title>
 
     <!-- Custom fonts for this template-->
-    <link href="../fonts/fontawesome-free/css/all.css" rel="stylesheet" type="text/css">
     <!-- Custom styles for this template-->
     <link href="style/admin.css" rel="stylesheet">
     <link href="style/admin.min.css" rel="stylesheet">
     <link href="../fonts/fonts.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.rtl.min.css">
@@ -49,8 +49,8 @@
                     <i class="fa fa-envelope" style="font-size: larger"></i>
                     <span class="badge badge-danger navbar-badge massages-badge">3</span>
                 </a>
-                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-left">
-                   \dhl 1
+                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-center">
+                   33
                 </div>
             </li>
         </ul>
@@ -70,49 +70,95 @@
         </span>
         </a>
     </div>
-    <div class="sidebar-header" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true" title="مشخصات داروخانه" style="background-color: #3C7BBF66">
-        <a href="index.php?pg=login&page=info"><span style="color: var(--color-2)">
+    <?php
+    if(in_array('17',$perm)){
+    ?>
+    <div class="sidebar-header" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true" title="مشخصات داروخانه" style="background-color: var(--color-main)">
+        <a href="index.php?pg=login&page=info"><span style="color: white;">
                 <i class="bi bi-info-circle me-1"></i>
            مشخصات داروخانه
         </span>
         </a>
     </div>
+    <?php
+    }
+    ?>
     <a class="sidebar-item" href="index.php?pg=login&page=dashboard">
         <i class="fa-solid fa-gauge"></i>
         داشبورد
     </a>
+    <?php
+    if(in_array('3',$perm) || in_array('2',$perm) || in_array('1',$perm)){
+    ?>
     <a class="sidebar-item" href="index.php?pg=login&page=menus">
         <i class="fa-solid fa-list"></i>
         منو ها
     </a>
-    <a class="sidebar-item" href="index.php?pg=login&page=categories">
-        <i class="fa-solid fa-grip"></i> دسته بندی دارو ها
-    </a>
+    <?php
+    }
+    if(in_array('3',$perm) || in_array('2',$perm) || in_array('1',$perm)){
+    ?>
     <a class="sidebar-item menu-sub-parent" onclick="sub()" href="index.php?pg=login&page=pages">
         <i class="fa-solid fa-file"></i>
         صفحات
     </a>
-    <a class="sidebar-item" href="index.php?pg=login&page=products">
-    <i class="fa-solid fa-bottle-droplet"></i>
-        دارو ها
-    </a>
+    <?php
+    }
+    if(in_array('4',$perm) || in_array('5',$perm) || in_array('6',$perm)){
+    ?>
+        <div class="sidebar-item sidebar-item-more" id="toggleCollapse2" data-bs-toggle="collapse" data-bs-target="#collapsemore2" aria-expanded="false" aria-controls="collapsemore2">
+            <i class="fa-solid fa-bottle-droplet"></i> دارو ها
+            <i id="collapseIcon" class="fa-solid fa-angle-down"></i>
+        </div>
+        <div class="collapse" id="collapsemore2">
+            <div class="card card-body border-0">
+                    <a class="sidebar-item" href="index.php?pg=login&page=categories">
+                        <i class="fa-solid fa-grip"></i>
+                       دسته بندی
+                    </a>
+                    <a class="sidebar-item" href="index.php?pg=login&page=products" style="background-color: transparent !important; color: #1b1b1b">
+                        <i class="fa-solid fa-bottle-droplet"></i>
+                        لیست محصولات
+                    </a>
+            </div>
+        </div>
+    <?php
+    }
+    if(in_array('9',$perm) || in_array('10',$perm)){
+    ?>
     <a class="sidebar-item" href="index.php?pg=login&page=blogs">
         <i class="fa-solid fa-bookmark"></i>
         مقالات
     </a>
+    <?php
+    }
+    if(in_array('11',$perm) || in_array('12',$perm) || in_array('13',$perm) || in_array('14',$perm)){
+    ?>
     <a class="sidebar-item" href="index.php?pg=login&page=users">
         <i class="fa-solid fa-users"></i> کاربران
     </a>
-    <div class="sidebar-item sidebar-item-more" id="toggleCollapse" data-bs-toggle="collapse" data-bs-target="#collapsemore" aria-expanded="false" aria-controls="collapsemore">
+    <?php
+    }
+    if(in_array('15',$perm) || in_array('16',$perm)){
+
+    ?>
+    <div class="sidebar-item sidebar-item-more" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
         <i class="fa-solid fa-list"></i> سایر
         <i id="collapseIcon" class="fa-solid fa-angle-down"></i>
     </div>
-    <div class="collapse" id="collapsemore">
-        <div class="card card-body">
+    <div class="collapse" id="collapseExample">
+        <div class="card card-body border-0">
+            <?php
+            if(in_array('15',$perm)){
+            ?>
             <a class="sidebar-item" href="index.php?pg=login&page=createoff">
                    <i class="fa-solid fa-tag"></i>
                    ایجاد تخفیف
             </a>
+            <?php
+            }
+            if(in_array('16',$perm)){
+            ?>
             <a class="sidebar-item" href="index.php?pg=login&page=slider">
                 <i class="bi bi-image"></i>
                 اسلایدر
@@ -121,12 +167,26 @@
                 <i class="bi bi-file-image"></i>
                 بنر ها
             </a>
+            <?php
+            }
+            ?>
         </div>
     </div>
+    <?php
+    }
+    if(in_array('19',$perm) || in_array('20',$perm)|| in_array('21',$perm)){
+    ?>
+    <a class="sidebar-item" style="background-color: var(--color-main); color: white !important;;" href="index.php?pg=login&page=support">
+        <i class="bi bi-headset"></i>
+        پشتیبانی
+    </a>
+    <?php
+    }
+    ?>
     <a href="index.php?logout" class="sidebar-item"><i class="fa-solid fa-right-from-bracket"></i>  خروج</a>
 
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <script>
     // Toggle sidebar
     document.getElementById('menu-toggle').addEventListener('click', function () {
@@ -155,21 +215,6 @@
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl);
     });
-
-    document.addEventListener("DOMContentLoaded", function() {
-        var collapsemore = document.getElementById('collapsemore');
-        var sidebarItemMore = document.getElementsByClassName('sidebar-item-more');
-
-        sidebarItemMore.addEventListener("click", function() {
-            if(collapsemore.classList.contains('show')){
-                collapsemore.classList.remove('show');
-            }
-            else {
-                collapsemore.classList.add('show');
-            }
-        });
-    });
-
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

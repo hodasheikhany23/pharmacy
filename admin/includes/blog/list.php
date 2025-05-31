@@ -4,6 +4,9 @@ defined('site') or die('Acces denied');
 if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
     die("Please <a href='index.php?pg=login'>login</a> to access this page");
 }
+if(!in_array('9',$perm) && !in_array('10',$perm)) {
+    die("شما مجوز دسترسی به این صفحه را ندارید");
+}
 $errors=[];
 if(isset($_GET['action']) && $_GET['action'] == 'delete'){
     $resultBlog = $link->query("DELETE FROM blog WHERE blg_id = ".$_GET['id']);
@@ -82,14 +85,17 @@ $resultBlog = $link->query("SELECT * FROM blog");
                 echo '<td class="d-flex align-content-center px-4 py-2">'
                     . '<a class="btn btn-info text-white me-2" title="ویرایش" href="index.php?pg=login&page=editblogs&id=' . $rowBlog['blg_id'] . '">'
                     . '<i class="fa-solid fa-pen-to-square"></i>'
-                    . '</a>'
-                    . '<a class="btn btn-danger text-white me-2" title="حذف" href="index.php?pg=login&page=blogs&action=delete&id='.$rowBlog['blg_id'].'">'
-                    . '<i class="fa-solid fa-trash"></i>'
-                    . '</a>'
-                    . '<a class="btn btn-warning text-white me-2" title="مطالب مقاله " href="index.php?pg=login&page=blogcontent&id='.$rowBlog['blg_id'].'">'
-                    . '<i class="fa-solid fa-bars-staggered"></i>'
-                    . '</a>'
-                    . '</td>';
+                    . '</a>';
+                if(in_array('10',$perm)){
+                    echo  '<a class="btn btn-danger text-white me-2" title="حذف" href="index.php?pg=login&page=blogs&action=delete&id='.$rowBlog['blg_id'].'">'
+                        . '<i class="fa-solid fa-trash"></i>'
+                        . '</a>';
+                }
+
+                echo '<a class="btn btn-warning text-white me-2" title="مطالب مقاله " href="index.php?pg=login&page=blogcontent&id='.$rowBlog['blg_id'].'">'
+                . '<i class="fa-solid fa-bars-staggered"></i>'
+                . '</a>'
+                . '</td>';
             }
             ?>
             </tbody>

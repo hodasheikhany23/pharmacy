@@ -22,6 +22,8 @@ $result_category= $link->query("SELECT * FROM category WHERE cat_subm_id = '".$_
             <h4 class="ltn__widget-title ltn__widget-title-border-2">شرکت سازنده</h4>
             <div class=" border-0 flex-row rounded d-flex align-items-center p-2">
                 <div class="d-flex flex-column">
+                    <input class="d-none" id="pd" value="<?php echo $_GET['pd']?>">
+                    <input class="d-none" id="md" value="<?php echo $_GET['md']?>">
                     <?php
                     $cat_list = implode(',', $cat);
                     $result_company = $link->query("SELECT DISTINCT drg_company FROM drogs where drg_category_id IN ($cat_list)");
@@ -98,6 +100,8 @@ $result_category= $link->query("SELECT * FROM category WHERE cat_subm_id = '".$_
 </div>
 <script>
     function filterByCompanies() {
+        var pd = document.getElementById('pd').value;
+        var md = document.getElementById('md').value;
         var checkboxes = document.querySelectorAll('input[name="co[]"]:checked');
         var selectedCompanies = [];
         checkboxes.forEach(function(checkbox) {
@@ -106,6 +110,8 @@ $result_category= $link->query("SELECT * FROM category WHERE cat_subm_id = '".$_
         var data = new URLSearchParams();
         selectedCompanies.forEach(function(value) {
             data.append('co[]', value);
+            data.append('pd', value);
+            data.append('md', value);
         });
 
         var xhr = new XMLHttpRequest();

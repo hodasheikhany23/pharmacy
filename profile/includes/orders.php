@@ -82,7 +82,6 @@ else{
                 }
             }
         };
-
         xhr.send('st=' + encodeURIComponent(st));
     }
     function orderdata(order) {

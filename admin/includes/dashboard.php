@@ -247,37 +247,65 @@ require_once "time/jdf.php";
         <div class="col-lg-7  mt-5 section-admin">
             <div class="card border-0">
                 <!-- Card header -->
-                <div class="card-header border-bottom p-4">
-                    <h5 class="card-header-title">مقالات پربازدید</h5>
+                <div class="card-header border-bottom p-1 pt-3">
+                    <h6 class="card-header-title">مقالات پر طرفدار</h6>
                 </div>
 
                 <!-- Card body START -->
                 <div class="card-body p-4" style="height: 440px !important;">
                     <div>
                         <?php
-                        $result_comment = $link->query("SELECT * FROM comment ORDER BY c_id DESC LIMIT 4");
-                        while ($row_comment = $result_comment->fetch_assoc()) {
-                            $comment_user = $link->query("SELECT * FROM users WHERE u_id='".$row_comment['c_user_id']."'");
-                            $row_comment_user = $comment_user->fetch_assoc();
+                        $result_blog = $link->query("SELECT * FROM blog ORDER BY blg_rank DESC LIMIT 3");
+                        while ($row_blog = $result_blog->fetch_assoc()) {
+                            $comment_detail = $link->query("SELECT * FROM blog_detail WHERE blgde_blog_id='".$row_blog['blg_id']."'");
+                            $row_detail = $comment_detail->fetch_assoc();
                             ?>
                             <div class="d-flex justify-content-between position-relative">
                                 <div class="d-sm-flex">
                                     <div class="icon-lg bg-purple bg-opacity-10 text-purple rounded-2 flex-shrink-0">
                                         <?php
-                                        if(isset($row_comment_user['u_image']) && !empty($row_comment_user['u_image'])){
-                                            $image = $row_comment_user['u_image'];
+                                        if(isset($row_blog['blg_cover']) && !empty($row_blog['blg_cover'])){
+                                            $image = $row_blog['blg_cover'];
                                         }
                                         else{
                                             $image = "img/profile.png";
                                         }
-                                        echo '<img src='.$image.' alt="avatar" class="rounded-circle" width="50" height="50">';
+                                        echo '<img src='.$image.' alt="avatar" class="rounded" width="100" height="100" style="object-fit: cover;">';
                                         ?>
 
                                     </div>
                                     <div class="ms-0 ms-sm-3 mt-2 mt-sm-0">
-                                        <h6 class="mb-0 fw-normal"><a href="#" class="stretched-link"><?php echo $row_comment_user['u_username']; ?>  </a></h6>
-                                        <p class="mb-0"><?php echo $row_comment['c_text']; ?></p>
-                                        <span class="small"><?php echo dateFormat($row_comment['c_date']); ?></span>
+                                        <div class="d-flex justify-content-between">
+                                            <h6 class="mb-2 fw-normal" style="font-weight: bold !important; font-size: 14px"><a href="#" class="stretched-link"><?php echo $row_blog['blg_title']; ?>  </a></h6>
+                                            <div class="product-ratting d-flex flex-row justify-content-between">
+                                                <ul>
+                                                    <?php
+                                                    $drg_rank = $row_blog['blg_rank'];
+                                                    for($i=1;$i<=$drg_rank;$i++) {
+                                                        echo '<i class="bi bi-star-fill d-flex" style="color: goldenrod !important; font-size: 12px;"></i>';
+                                                        if(($drg_rank - $i < 1) && ($drg_rank - $i > 0)) {
+                                                            echo '<i class="bi bi-star-half d-flex" style="color: goldenrod !important;transform: scaleX(-1);font-size: 12px;"></i>';
+                                                        }
+                                                    }
+                                                    for($i=1;$i<=5-$drg_rank;$i++) {
+                                                        echo '<i class="bi bi-star d-flex" style="color: goldenrod !important;font-size: 12px;"></i>';
+                                                    }
+                                                    ?>
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                        <?php
+                                        $para = [];
+                                        $result_p = $link->query("SELECT * FROM blog_detail WHERE blgde_blog_id = '".$row_blog['blg_id']."' and blgde_paragraph != 'null' order by blgde_id limit 1");
+                                        if ($result_p->num_rows > 0) {
+                                            $row_p = $result_p->fetch_assoc();
+                                            echo '<p class="mb-2" style="font-size: 14px;">'.substr($row_p['blgde_paragraph'], 0, 150) .'...</p>';
+                                        }
+
+
+                                        ?>
+                                        <span class="small"><?php echo $row_blog['blg_date']; ?></span>
                                     </div>
                                 </div>
                             </div>
@@ -306,8 +334,8 @@ require_once "time/jdf.php";
         <div class="col-lg-6 col-xxl-4  mt-5 section-admin">
             <div class="card border-0">
                 <!-- Card header -->
-                <div class="card-header border-bottom p-4">
-                    <h5 class="card-header-title"> دیدگاه های اخیر</h5>
+                <div class="card-header border-bottom  p-1 pt-3">
+                    <h6 class="card-header-title"> دیدگاه های اخیر</h6>
                 </div>
 
                 <!-- Card body START -->

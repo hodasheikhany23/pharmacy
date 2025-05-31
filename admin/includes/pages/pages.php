@@ -3,6 +3,9 @@
 if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
     die("Please <a href='index.php?pg=login'>login</a> to access this page");
 }
+if(!in_array('1',$perm) && !in_array('2',$perm) && !in_array('3',$perm)){
+    die("شما دسترسی به این صفحه ندارید");
+}
     $errors = [];
     if (isset($_GET['action'])) {
         switch ($_GET['action']) {
@@ -10,15 +13,18 @@ if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
                 require_once "includes/pages/update.php";
                 break;
             case 'delete':
-                $result =  $link->query("DELETE FROM pages WHERE `pages`.`pg_id` = '".$_GET['id']."'");
-                if ($link->affected_rows == 1 && $link->errno==0) {
-                    $errors['success_delete'] = "صفحه با موفقیت حذف شد";
+                if (in_array('2', $perm)) {
+                    $result = $link->query("DELETE FROM pages WHERE `pages`.`pg_id` = '" . $_GET['id'] . "'");
+                    if ($link->affected_rows == 1 && $link->errno == 0) {
+                        $errors['success_delete'] = "صفحه با موفقیت حذف شد";
+                    } else if ($link->errno == 1451) {
+                        $errors['delete'] = "خطا در حذف صفحه: اطلاعات وابسته به صفحه در سامانه موجود است";
+                    } else if ($link->errno > 0) {
+                        $errors['delete'] = "خطا در حذف صفحه";
+                    }
                 }
-                else if ($link->errno == 1451) {
-                    $errors['delete'] = "خطا در حذف صفحه: اطلاعات وابسته به صفحه در سامانه موجود است";
-                }
-                else if($link->errno > 0){
-                    $errors['delete'] = "خطا در حذف صفحه";
+                else{
+                    die("شما این مجوز را ندارید");
                 }
                 break;
         }
@@ -50,10 +56,16 @@ if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
         </div>
         <div class="section-title" style="margin-top: 24px !important; padding-top: 0 !important;">
             <h4 class="mb-4">لیست صفحات  </h4>
+            <?php
+            if(in_array('1',$perm)){
+            ?>
             <a href="index.php?pg=login&page=addpage" type="submit" class="button btn btn-primary sign">
                 <i class="fa-solid fa-plus"></i>
                 <span style="margin-left: 2px;">| </span> افزودن صفحه
             </a>
+            <?php
+            }
+            ?>
         </div>
         <div>
             <table class="table table-bordered table-striped align-middle">
@@ -108,27 +120,35 @@ if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
                         echo '<td class="px-4 py-2 w-25">'.$pg_type.'</td>';
                         echo '<td class="px-4 py-2 w-25">'.$rowMenu['menu_name'].'</td>';
                         echo '<td class="px-4 py-2 w-25">'.$pg_status.'</td>';
-                        echo '<td class="d-flex align-content-center px-4 py-2">'
-                            . '<a class="btn btn-info text-white me-2" title="ویرایش" href="index.php?pg=login&page=editpages&id=' . $rowPage['pg_id'] . '">'
-                            . '<i class="fa-solid fa-pen-to-square"></i>'
-                            . '</a>';
-                            if($rowPage['pg_id'] != 6){
-                                echo  '<a class="btn btn-danger text-white me-2" title="حذف" href="index.php?pg=login&page=pages&action=delete&id='.$rowPage['pg_id'].'">'
-                                . '<i class="fa-solid fa-trash"></i>'
+                        echo '<td class="d-flex align-content-center px-4 py-2">';
+                        if (in_array('1', $perm)) {
+                            echo '<a class="btn btn-info text-white me-2" title="ویرایش" href="index.php?pg=login&page=editpages&id=' . $rowPage['pg_id'] . '">'
+                                . '<i class="fa-solid fa-pen-to-square"></i>'
                                 . '</a>';
-                                echo '<a class="btn btn-warning text-white me-2" title="محتوای صفحه" href="index.php?pg=login&page=pagecontent&id='.$rowPage['pg_id'].'">'
+                        }
+                        if ($rowPage['pg_id'] != 6) {
+                            if (in_array('2', $perm)) {
+                                echo '<a class="btn btn-danger text-white me-2" title="حذف" href="index.php?pg=login&page=pages&action=delete&id=' . $rowPage['pg_id'] . '">'
+                                    . '<i class="fa-solid fa-trash"></i>'
+                                    . '</a>';
+                            }
+                            if (in_array('1', $perm)) {
+                                echo '<a class="btn btn-warning text-white me-2" title="محتوای صفحه" href="index.php?pg=login&page=pagecontent&id=' . $rowPage['pg_id'] . '">'
                                     . '<i class="fa-solid fa-bars-staggered"></i>'
                                     . '</a>'
                                     . '</td>';
                             }
-                            else{
+                        }
+                        else {
+                            if (in_array('1', $perm)) {
                                 echo '<a class="btn btn-warning text-white me-2" title="محتوای صفحه" href="index.php?pg=login&page=info">'
                                     . '<i class="fa-solid fa-bars-staggered"></i>'
                                     . '</a>'
                                     . '</td>';
                             }
-
+                        }
                     }
+
                 }
                 ?>
                 </tbody>

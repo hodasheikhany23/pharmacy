@@ -79,6 +79,9 @@
 </head>
 <body class="px-4 pt-4">
 <?php
+if(!in_array('17',$perm)) {
+    die("شما مجوز دسترسی به این صفحه را ندارید");
+}
 $errors=[];
 if (isset($_POST['sub_update_lic'])) {
     if (isset($_FILES['pic'])) {

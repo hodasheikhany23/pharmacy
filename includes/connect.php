@@ -30,4 +30,12 @@
         $value = strip_tags($value);
         return $value;
     }
+    if(isset($_SESSION['user_id']) && $_SESSION['is_admin'] == 1){
+        $perm=[];
+        $role = $link->query("SELECT * FROM admin_role WHERE ar_user_id = '".$_SESSION['user_id']."'");
+        while($row_role = $role->fetch_assoc()) {
+            $perm[] = $row_role['ar_permission_id'];
+        }
+    }
+
 ?>

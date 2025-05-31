@@ -3,7 +3,9 @@ if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
     die("Please <a href='index.php?pg=login'>login</a> to access this page");
 }
     defined('site') or die('Acces denied');
-
+if(!in_array('1',$perm)){
+    die("شما دسترسی به این صفحه ندارید");
+}
 $errors = [];
     if(isset($_POST['submit'])){
         $is_active = isset($_POST['is_active']) ? 1 : 2;

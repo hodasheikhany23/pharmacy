@@ -635,7 +635,9 @@ nav {
 .product-price span {
     color: #04ac50;
 }
-
+.bg-warning{
+    background-color: rgba(255, 193, 7, 0.22) !important;
+}
 
 /* BLOG CAROUSEL */
 .blog-card-body {

@@ -4,6 +4,9 @@ defined('site') or die('Acces denied');
 if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
     die("Please <a href='index.php?pg=login'>login</a> to access this page");
 }
+if(!in_array('1',$perm) && !in_array('2',$perm) && !in_array('3',$perm)){
+    die("شما دسترسی به این صفحه ندارید");
+}
 $result_icon = $link -> query("SELECT * FROM icons");
 $errors = [];
 if(isset($_POST['submit_add'])){
@@ -122,9 +125,10 @@ $resultMenu = $link -> query("SELECT * FROM menu");
             </thead>
             <tbody id="menuTableBody">
             <?php
-            echo '<tr>';
-            echo '<td class="px-4 py-2">ایجاد</td>';
-            echo '<td class="px-4 py-2">  
+            if(in_array('1',$perm)) {
+                echo '<tr>';
+                echo '<td class="px-4 py-2">ایجاد</td>';
+                echo '<td class="px-4 py-2">  
             <form method="post" action="" class="row g-1">  
                 <div class="col-auto">
                     <input name="menu_name" class="form-text border-0 p-2 rounded" type="text" placeholder=" نام منو" style="height: 35px !important;">  
@@ -133,13 +137,13 @@ $resultMenu = $link -> query("SELECT * FROM menu");
                 <select name="icon_menu" class="form-select rounded mr-2" aria-label="Default select example">  
                     <option selected disabled>   انتخاب نماد منو</option>';
 
-                    if ($result_icon->num_rows > 0) {
-                        while ($row_icon = $result_icon->fetch_assoc()) {
-                            echo '<option value="' . $row_icon['ic_id'] . '"><i class="' . $row_icon['ic_tag'] . '"></i>' . $row_icon['ic_name'] . ' </option>';
-                        }
+                if ($result_icon->num_rows > 0) {
+                    while ($row_icon = $result_icon->fetch_assoc()) {
+                        echo '<option value="' . $row_icon['ic_id'] . '"><i class="' . $row_icon['ic_tag'] . '"></i>' . $row_icon['ic_name'] . ' </option>';
                     }
+                }
 
-                    echo '      </select>  
+                echo '      </select>  
                 </div>
                
                     <button name="submit_add" class="btn btn-info text-white me-2 w-25" title="ثبت">  
@@ -148,31 +152,38 @@ $resultMenu = $link -> query("SELECT * FROM menu");
                     </button>     
             </form>  
           </td>';
-            echo '<td class="d-flex align-content-center py-2"></td>';
-            echo '</tr>';
+                echo '<td class="d-flex align-content-center py-2"></td>';
+                echo '</tr>';
+            }
 
             while($rowMenu = $resultMenu->fetch_assoc()) {
                 echo '<tr id="row_'.$rowMenu['menu_id'].'">';
                 echo '<td class="px-4 py-2">'.$rowMenu['menu_id'].'</td>';
                 echo '<td class="px-4 py-2" id="name_'.$rowMenu['menu_id'].'">'.$rowMenu['menu_name'].'</td>';
                 echo '<td class="d-flex align-content-center px-4 py-2">';
-                echo '<button class="edit-button btn btn-warning text-white me-2"
+                if(in_array('1',$perm)) {
+                    echo '<button class="edit-button btn btn-warning text-white me-2"
                         onclick="editRow(' . $rowMenu['menu_id'] . ', ' . $rowMenu['menu_icon'] . ')"
                         data-id="' . $rowMenu['menu_id'] . '"
                         data-icon="' . $rowMenu['menu_icon'] . '"
                         id="edit-button-' . $rowMenu['menu_id'] . '">
                         <i class="fa-solid fa-edit"></i>
                     </button>';
-                if($rowMenu['menu_id'] != '44' && $rowMenu['menu_id'] != '47' && $rowMenu['menu_id'] != '49'){
-                    echo '<a class="btn btn-danger text-white me-2" title="حذف" href="index.php?pg=login&page=menus&action=delete&id='.$rowMenu['menu_id'].'">'
-                        . '<i class="fa-solid fa-trash"></i>'
-                        . '</a>';
                 }
-                if($rowMenu['menu_id'] == '44') {
-                    echo '<a class="btn btn-info text-white me-2" title="مشاهده زیر منو ها" href="index.php?pg=login&page=listsub_menu&id=' . $rowMenu['menu_id'] . '">'
-                        . '<i class="fa-solid fa-bars-staggered"></i>'
-                        . '</a>'
-                        . '</td>';
+                if(in_array('2',$perm)) {
+                    if ($rowMenu['menu_id'] != '44' && $rowMenu['menu_id'] != '47' && $rowMenu['menu_id'] != '49') {
+                        echo '<a class="btn btn-danger text-white me-2" title="حذف" href="index.php?pg=login&page=menus&action=delete&id=' . $rowMenu['menu_id'] . '">'
+                            . '<i class="fa-solid fa-trash"></i>'
+                            . '</a>';
+                    }
+                }
+                if(in_array('3',$perm)) {
+                    if ($rowMenu['menu_id'] == '44') {
+                        echo '<a class="btn btn-info text-white me-2" title="مشاهده زیر منو ها" href="index.php?pg=login&page=listsub_menu&id=' . $rowMenu['menu_id'] . '">'
+                            . '<i class="fa-solid fa-bars-staggered"></i>'
+                            . '</a>'
+                            . '</td>';
+                    }
                 }
                 echo '</tr>';
             }

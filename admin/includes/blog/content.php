@@ -3,6 +3,9 @@ defined('site') or die('Acces denied');
 if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
     die("Please <a href='index.php?pg=login'>login</a> to access this page");
 }
+if(!in_array('9',$perm)) {
+    die("شما مجوز دسترسی به این صفحه را ندارید");
+}
 $errors = [];
 $result_blog = $link->query("SELECT * FROM blog WHERE blg_id = '".$_GET['id']."'");
 if($result_blog->num_rows > 0){

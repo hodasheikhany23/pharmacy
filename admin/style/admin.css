@@ -11,6 +11,7 @@
   --secondary-color-3 : #bf773c;
   --secondary-color-4 : rgba(191, 119, 60, 0.5);
 }
+
 .modal-backdrop.show {
   background-color: rgba(0, 0, 0, 0.4) !important; /* مقادیر 0.2 تا 0.5 بر حسب نیاز، هر چه کم‌تر، روشن‌تر */
 }
@@ -194,10 +195,11 @@
 }
 
 .sidebar-item {
-  padding: 15px !important;
+  font-size: 16px !important;
+  padding: 14px !important;
   transition: all ease-in-out .2s;
   border-radius: 8px !important;
-  margin-bottom: .5em;
+  margin-bottom: .2em;
   color: #1b1b1b !important;
 }
 .sidebar-item:hover{
@@ -218,7 +220,7 @@
 }
 .sidebar-item i{
   margin-left: 1em;
-  font-size: large;
+  font-size: 14px !important;
 }
 .profile-pic {
   width: 50px;

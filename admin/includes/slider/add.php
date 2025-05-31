@@ -3,7 +3,9 @@ if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
     die("Please <a href='index.php?pg=login'>login</a> to access this page");
 }
 defined('site') or die('Acces denied');
-
+if(!in_array('16',$perm)) {
+    die("شما مجوز دسترسی به این صفحه را ندارید");
+}
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_FILES['sliderImages'])) {
         $files = $_FILES['sliderImages'];

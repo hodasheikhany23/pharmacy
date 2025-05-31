@@ -1,11 +1,14 @@
 <?php
-    defined('site') or die('Acces denied');
+defined('site') or die('Acces denied');
 
 if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
     die("Please <a href='index.php?pg=login'>login</a> to access this page");
 }
-    $link = new mysqli("localhost", "root", "", "pharmacy_db");
 
+$link = new mysqli("localhost", "root", "", "pharmacy_db");
+if(!in_array('11',$perm) && !in_array('12',$perm) && !in_array('13',$perm) && !in_array('14',$perm)) {
+    die("شما مجوز دسترسی به این صفحه را ندارید");
+}
     $errors = [];
     if (isset($_GET['action'])) {
         switch ($_GET['action']) {
@@ -13,17 +16,19 @@ if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
                 require_once "admin/includes/updateuser.php";
                 break;
             case 'delete':
-                $link->query("DELETE FROM users WHERE u_id = '" . clean_id($_GET['id']) . "'");
-                if ($link->errno > 0 || $link->affected_rows == 0) {
-                    $errors['delete'] = "کاربر مورد نظر در سامانه موجود نیست!";
+                if(in_array('12', $perm)){
+                    $link->query("DELETE FROM users WHERE u_id = '" . clean_id($_GET['id']) . "'");
+                    if ($link->errno > 0 || $link->affected_rows == 0) {
+                        $errors['delete'] = "کاربر مورد نظر در سامانه موجود نیست!";
+                    }
+                    else if ($link->affected_rows == 1) {
+                        $errors['success_delete'] = "کاربر با موفقیت حذف شد";
+                    }
+                    else if ($link->errno == 1451) {
+                        $errors['delete'] = "خطا در حذف کاربر: اطلاعات وابسته به کاربر در سامانه موجود است";
+                    }
+                    break;
                 }
-                else if ($link->affected_rows == 1) {
-                    $errors['success_delete'] = "کاربر با موفقیت حذف شد";
-                }
-                else if ($link->errno == 1451) {
-                    $errors['delete'] = "خطا در حذف کاربر: اطلاعات وابسته به کاربر در سامانه موجود است";
-                }
-                break;
             case 'changePass':
                 require_once "admin/includes/changePassword.php";
                 break;
@@ -60,10 +65,15 @@ if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
         </div>
         <div class="section-title" style="margin-top: 24px !important; padding-top: 0 !important;">
             <h4 class="mb-4">جدول اطلاعات مخاطبین</h4>
-            <a href="index.php?pg=login&page=adduser" type="submit" class="button btn btn-primary sign">
+            <?php
+            if(in_array('11', $perm)) {
+                echo ' <a href="index.php?pg=login&page=adduser" type="submit" class="button btn btn-primary sign">
                 <i class="fa-solid fa-plus"></i>
                 <span style="margin-left: 2px;">| </span> افزودن کاربر
-            </a>
+            </a>';
+            }
+            ?>
+
         </div>
         <div>
             <table class="table table-bordered table-striped align-middle">
@@ -84,17 +94,24 @@ if(!isset($_SESSION['username']) || $_SESSION['is_admin'] != '1'){
                     echo '<td class="px-4 py-2">'.$rowUser['u_username'].'</td>';
                     echo '<td class="px-4 py-2">'.$rowUser['u_phone'].'</td>';
                     echo '<td class="px-4 py-2 w-75">'.$rowUser['u_address'].'</td>';
-                    echo '<td class="d-flex align-content-center px-4 py-2">'
-                        . '<a class="btn btn-info text-white me-2" title="ویرایش" href="index.php?pg=login&page=users&action=edit&id=' . $rowUser['u_id'] . '">'
-                        . '<i class="fa-solid fa-pen-to-square"></i>'
-                        . '</a>'
-                        . '<a class="btn btn-danger text-white me-2" title="حذف" href="index.php?pg=login&page=users&action=delete&id='.$rowUser['u_id'].'">'
-                        . '<i class="fa-solid fa-trash"></i>'
-                        . '</a>'
-                        . '<a class="btn btn-warning text-white me-2" title="تغییر رمز عبور" href="index.php?pg=login&page=users&action=changePass&id='.$rowUser['u_id'].'">'
-                        . '<i class="fa-solid fa-key"></i>'
-                        . '</a>'
-                        . '</td>';
+                    echo '<td class="d-flex align-content-center px-4 py-2">';
+                    if(in_array('11', $perm)) {
+                        echo'<a class="btn btn-info text-white me-2" title="ویرایش" href="index.php?pg=login&page=users&action=edit&id=' . $rowUser['u_id'] . '">'
+                            . '<i class="fa-solid fa-pen-to-square"></i>'
+                            . '</a>';
+                    }
+                    if(in_array('12', $perm)) {
+                        echo'<a class="btn btn-danger text-white me-2" title="حذف" href="index.php?pg=login&page=users&action=delete&id='.$rowUser['u_id'].'">'
+                            . '<i class="fa-solid fa-trash"></i>'
+                            . '</a>';
+                    }
+                    if(in_array('13', $perm)) {
+                        echo '<a class="btn btn-warning text-white me-2" title="تغییر رمز عبور" href="index.php?pg=login&page=users&action=changePass&id='.$rowUser['u_id'].'">'
+                    . '<i class="fa-solid fa-key"></i>'
+                    . '</a>'
+                    . '</td>';
+                    }
+
                 }
                 ?>
                 </tbody>

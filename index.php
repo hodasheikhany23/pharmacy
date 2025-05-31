@@ -503,13 +503,21 @@
                                             ?>
 
                                             <div class="product-ratting d-flex flex-row justify-content-between">
-                                                <ul>
-                                                    <li><a href="#"><i class="bi bi-star-fill"></i></a></li>
-                                                    <li><a href="#"><i class="bi bi-star-fill"></i></a></li>
-                                                    <li><a href="#"><i class="bi bi-star-fill"></i></a></li>
-                                                    <li><a href="#"><i class="bi bi-star-half"></i></a></li>
-                                                    <li><a href="#"><i class="bi bi-star"></i></a></li>
-                                                </ul>
+                                                <div class="product-ratting d-flex flex-row justify-content-start">
+                                                    <?php
+                                                    $drg_rank = $blog['blg_rank'];
+                                                    for($i=1;$i<=$drg_rank;$i++) {
+                                                        echo '<i class="bi bi-star-fill d-flex" style="color: goldenrod !important; font-size: 12px;"></i>';
+                                                        if(($drg_rank - $i < 1) && ($drg_rank - $i > 0)) {
+                                                            echo '<i class="bi bi-star-half d-flex" style="color: goldenrod !important;transform: scaleX(-1);font-size: 12px;"></i>';
+                                                        }
+                                                    }
+                                                    for($i=1;$i<=5-$drg_rank;$i++) {
+                                                        echo '<i class="bi bi-star d-flex" style="color: goldenrod !important;font-size: 12px;"></i>';
+                                                    }
+                                                    ?>
+                                                </div>
+
                                                 <a class="view-more-btn blog-view-more-btn" href="blog-detail.php?id=<?php echo $blog['blg_id'] ?>">بیشتر <i class="bi bi-arrow-left"></i></a>
 
                                             </div>
