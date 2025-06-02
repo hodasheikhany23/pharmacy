@@ -100,6 +100,9 @@
                 case 'cart':
                     require_once("includes/cart.php");
                     break;
+                case 'verify':
+                    require_once("includes/verify.php");
+                    break;
                 case 'payment':
                     require_once("includes/payment.php");
                     break;

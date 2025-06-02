@@ -81,7 +81,8 @@ $resultBlog = $link->query("SELECT * FROM blog");
                     echo '<td class="px-4 py-2"> <span class="badge bg-success">منتشر شده </span></td>';
                 }
 
-                echo '<td class="px-4 py-2"><i class="bi bi-star-fill m-1" style="color: #e3a608 !important;"></i>'.$rowBlog['blg_rank']. '</td>';
+                echo '<td class="px-4 py-2"><span class="badge bg-warning p-2">'.$rowBlog['blg_rank'].'<i class="bi bi-star-fill m-1" style="color: #fbf5e5 !important;"></i></span>
+                    </td>';
                 echo '<td class="d-flex align-content-center px-4 py-2">'
                     . '<a class="btn btn-info text-white me-2" title="ویرایش" href="index.php?pg=login&page=editblogs&id=' . $rowBlog['blg_id'] . '">'
                     . '<i class="fa-solid fa-pen-to-square"></i>'

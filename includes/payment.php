@@ -1,8 +1,8 @@
 <?php
-require_once("includes/header.php");
 $errors = [];
 if(!isset($_SESSION["username"])){
-    echo "لطفا ابتدا وارد سایت شوید";
+    $errors['login'] = "لطفا ابتدا وارد سایت شوید";
+    exit();
 }
 else{
     $result_factor = $link->query("SELECT * FROM factor WHERE fac_user_id = '".$_SESSION['user_id']."' and fac_payment_status ='3'");
@@ -12,35 +12,115 @@ else{
     else{
         $row_factor = $result_factor->fetch_assoc();
         $result_detail = $link->query("SELECT * FROM factor_detail WHERE facde_factor_id = '".$row_factor['fac_id']."'");
-    }
-    if(isset($_POST['submit'])){
-        require_once "time/jdf.php";
-        $time = jdate("Y-m-d H:i:s");
-        $result_save = $link -> query("INSERT INTO payment (pay_date, pay_price, pay_paymethod_id,pay_paystatus_id,pay_factor_id) values ('".$time."','".$_POST['total_price']."','".$_POST['payment_method']."','1','".$row_factor['fac_id']."')");
-        if($link->errno==0){
-            $link -> query("UPDATE factor SET fac_payment_status = '1' WHERE fac_id = '".$row_factor['fac_id']."'");
-            $errors['ok'] = "خرید موفق";
-            $result_facde = $link -> query("SELECT * FROM factor_detail WHERE facde_factor_id = '".$row_factor['fac_id']."'");
-            while($row_facde = $result_facde->fetch_assoc()){
-                $result_drog_sale = $link -> query("SELECT * FROM drogs WHERE drg_id = '".$row_facde['facde_drog_id']."'");
-                if($result_drog_sale->num_rows > 0){
-                    $row_drog_sale = $result_drog_sale->fetch_assoc();
-                    $count = $row_facde['facde_count'];
-                    $available = $row_drog_sale['drg_available'] - $count;
-                    if($available < 0){
-                        $available = 0;
-                    }
-                    $sale = $row_drog_sale['drg_sales'];
-                    $sale += $count;
-                    $link->query("UPDATE drogs SET drg_available = '$available', drg_sales = '$sale' WHERE drg_id = '".$row_drog_sale['drg_id']."'");
-                }
+        $price = 0;
+        $benef = 0;
+        $benefit = 0;
+        while($row_detail = $result_detail->fetch_assoc()){
+            $result_drog = $link->query("SELECT * FROM drogs WHERE drg_id = '" . $row_detail['facde_drog_id'] . "'");
+            if ($result_drog->num_rows > 0) {
+                $row_drog = $result_drog->fetch_assoc();
+                $price += $row_drog['drg_price'];
             }
-            require_once "includes/thank.php";
+            $result_off = $link ->query("SELECT * FROM off where off_category_id = '".$row_drog['drg_category_id']."'");
+            if($result_off -> num_rows > 0){
+                $row_off = $result_off -> fetch_assoc();
+                $vl = $row_off['off_value'];
+            }
+            else{
+                $vl = 0;
+            }
+            $benef = $row_drog['drg_price'] * $vl/100;
+            $benefit = $benefit+$benef;
         }
-        else{
-            echo $link->error;
+        $total_price = $price - $benefit;
+        $_SESSION['total_price'] = (int)$total_price;
+        $_SESSION['factor_id'] = $row_factor['fac_id'];
+    }
+
+    if(isset($_POST['submit']) && $_POST['payment_method'] == '1'){
+        $merchant_id = "9c12975a-beee-4b02-bcec-03557fe7dd7a";
+        $callback_url = "http://localhost:8080/pharmacy/index.php?pg=verify";
+        $description = "پرداخت سفارش شماره " . $row_factor['fac_id'];
+        $data = [
+            'merchant_id' => $merchant_id,
+            'currency' => "IRT",
+            'amount' => (int)$total_price,
+            'callback_url' => $callback_url,
+            'description' => $description,
+            'metadata' => [
+                'mobile' => $_SESSION['phone'] ?? '',
+                'email' => '',
+            ]
+        ];
+
+        $ch = curl_init('https://sandbox.zarinpal.com/pg/v4/payment/request.json');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+            'Accept: application/json'
+        ]);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+
+        $response = curl_exec($ch);
+        $err = curl_error($ch);
+        curl_close($ch);
+
+        if($err) {
+            die("خطای cURL: " . $err);
+        }
+
+
+        $result = json_decode($response, true);
+        if(json_last_error() !== JSON_ERROR_NONE) {
+            die("خطا در تفسیر پاسخ JSON: " . json_last_error_msg());
+        }
+        if($err) {
+            $errors['payment'] = "خطا در ارتباط با درگاه پرداخت: " . $err;
+        }
+        elseif(empty($result['data']['code'])) {
+            $errors['payment'] = "پاسخ نامعتبر از درگاه پرداخت";
+        }
+        ob_end_clean();
+        if($result['data']['code'] == 100) {
+            $authority = $result['data']['authority'];
+            echo '<script>window.location.href="https://sandbox.zarinpal.com/pg/StartPay/'.$result['data']['authority'].'";</script>';
+            exit();
+
+        }
+        else {
+           echo "خطا در ایجاد تراکنش: کد خطا " . $result['data']['code'];
         }
     }
+
+    //        require_once "time/jdf.php";
+//        $time = jdate("Y-m-d H:i:s");
+//        $result_save = $link -> query("INSERT INTO payment (pay_date, pay_price, pay_paymethod_id,pay_paystatus_id,pay_factor_id) values ('".$time."','".$_POST['total_price']."','".$_POST['payment_method']."','1','".$row_factor['fac_id']."')");
+//        if($link->errno==0){
+//            $link -> query("UPDATE factor SET fac_payment_status = '1' WHERE fac_id = '".$row_factor['fac_id']."'");
+//            $errors['ok'] = "خرید موفق";
+//            $result_facde = $link -> query("SELECT * FROM factor_detail WHERE facde_factor_id = '".$row_factor['fac_id']."'");
+//            while($row_facde = $result_facde->fetch_assoc()){
+//                $result_drog_sale = $link -> query("SELECT * FROM drogs WHERE drg_id = '".$row_facde['facde_drog_id']."'");
+//                if($result_drog_sale->num_rows > 0){
+//                    $row_drog_sale = $result_drog_sale->fetch_assoc();
+//                    $count = $row_facde['facde_count'];
+//                    $available = $row_drog_sale['drg_available'] - $count;
+//                    if($available < 0){
+//                        $available = 0;
+//                    }
+//                    $sale = $row_drog_sale['drg_sales'];
+//                    $sale += $count;
+//                    $link->query("UPDATE drogs SET drg_available = '$available', drg_sales = '$sale' WHERE drg_id = '".$row_drog_sale['drg_id']."'");
+//                }
+//            }
+//            require_once "includes/thank.php";
+//        }
+//        else{
+//            echo $link->error;
+//        }
+ //   }
 ?>
 <body>
 <div class="container">
@@ -75,6 +155,7 @@ else{
                 $sum = 0;
                 $price = 0;
                 $off = 10;
+                $result_detail = $link->query("SELECT * FROM factor_detail WHERE facde_factor_id = '".$row_factor['fac_id']."'");
                 if ($result_detail->num_rows > 0) {
                     while ($row_detail = $result_detail->fetch_assoc()) {
                         $sum += 1;
@@ -85,7 +166,7 @@ else{
                         }
                         echo '<td style="padding: 12px;">' . $row_drog['drg_name'] . '</td>';
                         echo '<td style="padding: 12px;">' . number_format($row_drog['drg_price']) . '</td>';
-                        $price += $row_drog['drg_price'];
+//                        $price += $row_drog['drg_price'];
                         echo ' <div class="col-lg-3">';
                     }
                 }
@@ -94,7 +175,7 @@ else{
                     <td style="padding: 12px;">تخفیف</td>
                     <td style="padding: 12px;">
                         <?php
-                        $benefit = $price * 12/100;
+//                        $benefit = $price * 12/100;
                         echo number_format((int)$benefit); ?>
                         تومان
                     </td>
@@ -102,7 +183,7 @@ else{
                 <tr>
                     <td style="padding: 12px; font-weight: bold; color: #343a40;">مجموعه خرید</td>
                     <td style="padding: 12px; font-weight: bold; color: #28a745;">
-                        <?php $total_price = $price-$benefit;
+<!--                        --><?php //$total_price = $price-$benefit;
                         echo number_format((int)$total_price); ?>
                         تومان
                     </td>
@@ -166,5 +247,4 @@ else{
 </body>
 <?php
 }
-
 ?>
