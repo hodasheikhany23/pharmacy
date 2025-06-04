@@ -27,7 +27,7 @@ $errors = [];
                 $errors['username'] = "نام تخفیف را وارد کنید" ;
             }
             if(isset($name)){
-                $link->query("INSERT INTO off (off_name,off_value, off_category_id, off_status,off_drug_id) VALUES ('" . $name . "', '" . $_POST['value'] . "', '" .  $_POST['category'] . "', '" .  $is_active . "','".$_POST['drug']."')");
+                $link->query("INSERT INTO off (off_name,off_value, off_category_id, off_status,off_drug_id) VALUES ('" . $name . "', '" . clean_data($_POST['value']) . "', '" .  $_POST['category'] . "', '" .  $is_active . "','".$_POST['drug']."')");
                 if($link->errno == 0){
                     $errors['add_user'] = "تخفیف جدید با موفقیت ثبت شد";
                 }

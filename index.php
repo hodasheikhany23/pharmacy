@@ -106,6 +106,9 @@
                 case 'payment':
                     require_once("includes/payment.php");
                     break;
+                case 'support':
+                    require_once("includes/support.php");
+                    break;
             }
         }
         else{
@@ -521,7 +524,7 @@
                                                     ?>
                                                 </div>
 
-                                                <a class="view-more-btn blog-view-more-btn" href="blog-detail.php?id=<?php echo $blog['blg_id'] ?>">بیشتر <i class="bi bi-arrow-left"></i></a>
+                                                <a class="view-more-btn blog-view-more-btn" href="index.php?md=47&blog=<?php echo $blog['blg_id']; ?>">بیشتر <i class="bi bi-arrow-left"></i></a>
 
                                             </div>
 

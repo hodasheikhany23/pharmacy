@@ -108,7 +108,7 @@ require_once 'time/jdf.php';
                         <li><a class="dropdown-item" href="index.php?pg=login">
                         <i class="bi bi-gear"></i>
                         پنل کاربری</a></li>
-                        <li><a class="dropdown-item" href="#"> 
+                        <li><a class="dropdown-item" href="index.php?pg=support"> 
                         <i class="bi bi-headset"></i>
                         پشتیبانی</a></li>
                         <li><a class="dropdown-item text-danger" href="index.php?logout">

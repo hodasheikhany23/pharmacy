@@ -279,7 +279,7 @@ if(isset($_POST['add_to_cart'])){
                                                         <div class="ltn__commenter-img">
                                                         <?php
                                                         if(isset($row_user['u_image']) && !empty($row_user['u_image'])) {
-                                                            echo '<img src="uploads/'.$row_user['u_image'].'" style="width: 50px; height: 50px;">';
+                                                            echo '<img src="'.$row_user['u_image'].'" style="width: 50px; height: 50px;">';
                                                         }
                                                         else{
                                                             echo '<img src="img/profile.png" style="width: 50px; height: 50px;">';

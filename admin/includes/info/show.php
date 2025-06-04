@@ -97,7 +97,7 @@ if (isset($_POST['sub_update_lic'])) {
         $dest_path = $upload_dir . $new_name;
 
         if (move_uploaded_file($fileTmpPath, $dest_path)) {
-            $sql_update = "UPDATE license SET lic_name ='".$_POST['name']."',lic_image='".$dest_path."',lic_link='".$_POST['link']."' WHERE lic_id='".$_POST['id']."'";
+            $sql_update = "UPDATE license SET lic_name ='".clean_data($_POST['name'])."',lic_image='".$dest_path."',lic_link='".$_POST['link']."' WHERE lic_id='".$_POST['id']."'";
             if($link->query($sql_update) === TRUE){
                 $errors['success'] = "ویرایش با موفقیت انجام شد";
             }
@@ -122,7 +122,7 @@ if (isset($_POST['sub_add_lic'])) {
         $dest_path = $upload_dir . $new_name;
 
         if (move_uploaded_file($fileTmpPath, $dest_path)) {
-            $sql_update = "INSERT INTO license (lic_name,lic_image,lic_link) VALUES ('".$_POST['name']."','".$dest_path."','".$_POST['link']."')";
+            $sql_update = "INSERT INTO license (lic_name,lic_image,lic_link) VALUES ('".clean_data($_POST['name'])."','".$dest_path."','".$_POST['link']."')";
             if($link->query($sql_update) === TRUE){
                 $errors['success'] = "ذخیره با موفقیت انجام شد";
             }
@@ -238,7 +238,7 @@ if (isset($_POST['sub_doc'])) {
         $dest_path = $upload_dir . $new_name;
 
         if (move_uploaded_file($fileTmpPath, $dest_path)) {
-            $sql_update = "UPDATE info SET info_doctor_name ='" . $_POST['name'] . "', info_doctor_image='" . $dest_path . "'";
+            $sql_update = "UPDATE info SET info_doctor_name ='" . clean_data($_POST['name']) . "', info_doctor_image='" . $dest_path . "'";
             $link->query($sql_update);
             if($link->query($sql_update) === TRUE){
                 $errors['success'] = "ویرایش با موفقیت انجام شد";
@@ -285,7 +285,7 @@ if($result_info->num_rows > 0) {
     <div class="section mt-2 col-md-6">
         <div class="title-with-btn">
             <h4> لوگو</h4>
-            <button class="btn button btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal0" data-bs-whatever="@getbootstrap0"><i class="fas fa-pencil-alt"></i> ویرایش نام داروخانه </button>
+            <button class="btn button btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal0" data-bs-whatever="@getbootstrap0"><i class="fas fa-pencil-alt"></i> ویرایش لوگو  </button>
             <div class="modal fade" id="exampleModal0" tabindex="-1" aria-labelledby="exampleModalLabel0" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">

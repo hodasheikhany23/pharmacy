@@ -11,7 +11,7 @@ $result_icon = $link -> query("SELECT * FROM icons");
 $errors = [];
 if(isset($_POST['submit_add'])){
     if(!empty($_POST['menu_name'])){
-        $menu_name = $_POST['menu_name'];
+        $menu_name = clean_data($_POST['menu_name']);
     }
     else{
         $errors['menu'] = "   نام منو را وارد کنید";

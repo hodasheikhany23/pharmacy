@@ -41,7 +41,7 @@ if(isset($_POST['sub-image'])){
 
 }
 if(isset($_POST['sub-link'])){
-    $title = $_POST['title'];
+    $title = clean_data($_POST['title']);
     $a = $_POST['link'];
     $priority = 0;
     $result_priority = $link -> query("SELECT blgde_priority FROM blog_detail WHERE blgde_blog_id = '".$_GET['id']."'");
@@ -59,7 +59,7 @@ if(isset($_POST['sub-link'])){
     }
 }
 if(isset($_POST['sub-para'])){
-    $text = $_POST['text'];
+    $text = clean_data($_POST['text']);
     $priority = 0;
     $result_priority = $link -> query("SELECT blgde_priority FROM blog_detail WHERE blgde_blog_id = '".$_GET['id']."'");
     if($result_priority->num_rows > 0){
@@ -76,7 +76,7 @@ if(isset($_POST['sub-para'])){
     }
 }
 if(isset($_POST['sub-label'])){
-    $text = $_POST['label'];
+    $text = clean_data($_POST['label']);
     $array = explode("،", $text);
     $priority = 0;
     foreach($array as $label){
@@ -96,7 +96,7 @@ if(isset($_POST['sub-label'])){
     }
 }
 if(isset($_POST['sub-h'])){
-    $title = $_POST['title'];
+    $title = clean_data($_POST['title']);
     $priority = 0;
     $result_priority = $link -> query("SELECT blgde_priority FROM blog_detail WHERE blgde_blog_id = '".$_GET['id']."'");
     if($result_priority->num_rows > 0){
@@ -133,7 +133,7 @@ if(isset($_POST['edit_img'])){
     }
 }
 if(isset($_POST['edit_label'])){
-    $text = $_POST['label'];
+    $text = clean_data($_POST['label']);
     $array = explode("،", $text);
     $result_del = $link->query("DELETE FROM blog_detail WHERE blgde_label IS NOT NULL and blgde_blog_id = '".$_GET['id']."'");
     $priority = 0;
@@ -154,7 +154,7 @@ if(isset($_POST['edit_label'])){
     }
 }
 if(isset($_POST['edit_paragraph'])){
-    $text = $_POST['text'];
+    $text = clean_data($_POST['text']);
     $id = $_POST['id'];
     $result_title = $link->query("UPDATE blog_detail SET blgde_paragraph = '".$text."' WHERE blgde_id = '".$id."'");
     if($link->errno==0){
@@ -165,7 +165,7 @@ if(isset($_POST['edit_paragraph'])){
     }
 }
 if(isset($_POST['edit_heading'])){
-    $title = $_POST['title'];
+    $title = clean_data($_POST['title']);
     $id = $_POST['id'];
     $result_title = $link->query("UPDATE blog_detail SET blgde_heading = '".$title."' WHERE blgde_id = '".$id."'");
     if($link->errno==0){
@@ -176,7 +176,7 @@ if(isset($_POST['edit_heading'])){
     }
 }
 if(isset($_GET['action']) && $_GET['action'] == 'delete'){
-    $result_delete = $link->query("DELETE FROM blog_detail WHERE blgde_id = '".$_GET['idd']."'");
+    $result_delete = $link->query("DELETE FROM blog_detail WHERE blgde_id = '".clean_id($_GET['idd'])."'");
     if($result_delete){
         $errors['success'] = 'بخش مورد نظر با موفقیت حذف شد';
     }

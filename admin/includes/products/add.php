@@ -9,43 +9,87 @@ if(!in_array('4',$perm)) {
 $errors = [];
     if(isset($_POST['submit'])){
         if(isset($_POST['name'])){
-            $name = clean_data($_POST['name']) ;
+            if(mb_strlen(clean_data($_POST['name']) > 2)){
+                $name = clean_data($_POST['name']) ;
+            }
+            else{
+                $errors['name'] = '<div class="alert" role="alert">نام محصول باید بیشتر از دو کاراکتر باشد</div>' ;
+            }
         }
         else{
-            $errors['username'] = "نام محصول را وارد کنید" ;
+            $errors['name'] = '<div class="alert" role="alert">نام محصول را وارد کنید</div>' ;
         }
-        if (isset($_FILES['picFile']) && $_FILES['picFile']['error'] === UPLOAD_ERR_OK) {
-            $pictureExtention = substr($_FILES['picFile']['name'], strrpos($_FILES['picFile']['name'], '.') + 1);
-            if (!in_array($pictureExtention, ['png', 'jpg', 'jpeg','webp'])) {
-                $errors['picFile'] = 'پسوند تصویر مجاز نیست';
+        if(isset($_POST['company'])){
+            if(mb_strlen(clean_data($_POST['company']) > 2)){
+                $company = clean_data($_POST['company']) ;
             }
+            else{
+                $errors['company'] = '<div class="alert" role="alert">نام تولید کننده باید بیشتر از دو کاراکتر باشد</div>';
+            }
+        }
+        else{
+            $errors['company'] = '<div class="alert" role="alert">نام تولید کننده را وارد کنید</div>';
+        }
+        if(isset($_POST['price'])){
+            if(is_numeric($_POST['price'])){
+                $price = $_POST['price'];
+            }
+            else{
+                $errors['price'] = '<div class="alert" role="alert">قیمت محصول مجاز نیست</div>' ;
+            }
+        }
+        else{
+            $errors['price'] = '<div class="alert" role="alert">قیمت محصول را وارد کنید</div>' ;
+        }
+        if(isset($_POST['available'])){
+            if(is_numeric($_POST['available']) && $_POST['available'] > 0){
+                $available = $_POST['available'];
+            }
+            else{
+                $errors['price'] = '<div class="alert" role="alert">مقدار وارد شده  مجاز نیست</div>' ;
+            }
+        }
+        else{
+            $errors['price'] = '<div class="alert" role="alert">تعداد موجودی  را وارد کنید</div>' ;
+        }
 
-            if ($_FILES['picFile']['size'] > 520000) {
-                $errors['picFile'] = (isset($errors['picFile']) ? $errors['picFile'] . "<br>" : "") . 'حجم فایل بیشتر از حد مجاز است';
+        if(isset($_POST['content'])){
+            $content = clean_data($_POST['content']);
+        }
+        else{
+            $errors['content'] = '<div class="alert" role="alert">توضیحات را وارد کنید</div>' ;
+        }
+
+        if(isset($_FILES['picFile'])) {
+            $pictureExtention = substr($_FILES['picFile']['name'], strrpos($_FILES['picFile']['name'], '.')+1);
+            if(!in_array($pictureExtention, ['png', 'jpg', 'jpeg','webp'])) {
+                $errors['type'] = '<div class="alert" role="alert">' . 'پسوند مجاز نیست' . ' </div>';
             }
-            if (!isset($errors['picFile'])) {
+            if($_FILES['picFile']['size'] > 520000) {
+                $errors['picFile']= (isset($errors['picFile'])? $errors['picFile']."<br>":"").'<div class="alert" role="alert">' . 'حجم فایل بیشتر از حد مجاز است' . ' </div>';
+            }
+            if (!isset($errors['picFile']) && !isset($errors['type']) && empty($errors)) {
                 $fileName = $name.date("YmdHis") . "." . $pictureExtention;
                 move_uploaded_file($_FILES['picFile']['tmp_name'], "uploads/" . $fileName);
-            }
-        } else {
-            $errors['picFile'] = 'فایلی انتخاب نشده است';
-        }
-        if (!isset($errors['picFile'])) {
-            if(isset($name)){
-                $result = $link -> query("SELECT * FROM drogs WHERE drg_name='$name' AND drg_company = '".$_POST['company']."'");
-                if($result->num_rows > 0){
-                    $errors['duplicate'] = 'این محصول قبلا در سامانه اضافه شده است.';
-                }
-                else{
-                    $resultAdd = $link->query("INSERT INTO drogs (drg_name, drg_company, drg_price, drg_available, drg_category_id, drg_caption, drg_image,drg_usage) VALUES ('". $_POST['name'] ."', '". $_POST['company'] ."', '". $_POST['price'] ."', '". $_POST['available'] ."', '". $_POST['category'] ."', '". $_POST['content'] ."','".$fileName."','".$_POST['usage'] ."')");
-                    if($link->errno == 0){
-                        $errors['add_user'] = "محصول جدید با موفقیت ثبت شد";
+                if(isset($name)){
+                    $result = $link -> query("SELECT * FROM drogs WHERE drg_name='$name' AND drg_company = '".$_POST['company']."'");
+                    if($result->num_rows > 0){
+                        $errors['duplicate'] = 'این محصول قبلا در سامانه اضافه شده است.';
                     }
                     else{
-                        $errors['add_user_error'] = "محصول در ذخیره اطلاعات";
+                        $resultAdd = $link->query("INSERT INTO drogs (drg_name, drg_company, drg_price, drg_available, drg_category_id, drg_caption, drg_image,drg_usage) VALUES ('". $_POST['name'] ."', '". $_POST['company'] ."', '". $_POST['price'] ."', '". $_POST['available'] ."', '". $_POST['category'] ."', '". $_POST['content'] ."','".$fileName."','".$_POST['usage'] ."')");
+                        if($link->errno == 0){
+                            $errors['add_user'] = "محصول جدید با موفقیت ثبت شد";
+                        }
+                        else{
+                            $errors['add_user_error'] = "محصول در ذخیره اطلاعات";
+                        }
                     }
                 }
             }
+        }
+        else {
+            $errors['picFile'] = 'فایلی انتخاب نشده است';
         }
     }
 
@@ -111,6 +155,11 @@ $errors = [];
         <div class="mb-4">
             <label for="name" class="form-label">نام محصول</label>
             <input name="name" type="text" class="form-control" id="name">
+            <?php
+            if (isset($errors['name'])) {
+                echo $errors['name'];
+            }
+            ?>
         </div>
         <div class="form-group">
             <div class="mb-3">
@@ -121,15 +170,28 @@ $errors = [];
             if (isset($errors['picFile'])) {
                 echo $errors['picFile'];
             }
+            if (isset($errors['type'])) {
+                echo $errors['type'];
+            }
             ?>
         </div>
         <div class="mb-4">
             <label for="company" class="form-label">شرکت تولیدی</label>
             <input name="company" type="text" class="form-control" id="name">
+            <?php
+            if (isset($errors['company'])) {
+                echo $errors['company'];
+            }
+            ?>
         </div>
         <div class="mb-4">
             <label for="price" class="form-label">قیمت </label>
             <input name="price" type="text" class="form-control" id="name">
+            <?php
+            if (isset($errors['price'])) {
+                echo $errors['price'];
+            }
+            ?>
         </div>
         <div class="mb-4">
             <label for="available" class="form-label">تعداد موجود در انبار </label>

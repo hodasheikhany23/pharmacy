@@ -7,13 +7,13 @@ if(!isset($_SESSION['username'])){
 $errors = [];
 if(isset($_POST['submit_add'])){
     if(isset($_POST['cat_name'])){
-        $cat_name = $_POST['cat_name'];
+        $cat_name = clean_data($_POST['cat_name']);
     }
     else{
         echo "نام دسته بندی را وارد کنید";
     }
     if(isset($_POST['subm_category'])){
-        $subm_category = $_POST['subm_category'];
+        $subm_category = clean_data($_POST['subm_category']);
     }
     else{
         $errors['menu'] = "منو را انتخاب کنید";
@@ -32,12 +32,15 @@ if(isset($_POST['submit_add'])){
 if(isset($_GET['action'])){
     switch($_GET['action']){
         case "delete":
-            $result = $link -> query("DELETE FROM category WHERE cat_id = '".$_GET['id']."'");
-            if($link -> errno == 0){
+            $result = $link -> query("DELETE FROM category WHERE cat_id = '".clean_id($_GET['id'])."'");
+            if($link -> errno == 0 && $link->affected_rows>0){
                 $errors['delete_category'] = "منو با موفقیت حذف شد";
             }
             else if ($link -> errno == 1451){
                 $errors['err_delete_category'] = "خطا در حذف:محصولات مربوط به این دسته بندی را ویرایش یا حذف کنید.";
+            }
+            else if($link->affected_rows <= 0){
+                $errors['err_delete_category'] = "دسته بندی مورد نظر در سامانه موجود نیست";
             }
             else{
                 $errors['err_delete_category'] = "خطا در حذف منو";
@@ -101,7 +104,37 @@ $resultcategory = $link -> query("SELECT * FROM category");
             </tr>
             </thead>
             <tbody>
+
             <?php
+            echo '<tr>';
+            echo '<td class="px-4 py-2"></td>';
+            echo '<td class="px-4 py-2">
+                    <form method="post" action="" class="d-flex flex-row align-items-center justify-content-start">
+                        <div class="w-50" >
+                            <input name="cat_name" class="form-text border-0 p-2 rounded" type="text" value="دسته بندی جدید">
+                        </div>
+                        <div>
+                            <select name="subm_category" class="form-select rounded mr-2" aria-label="Default select example">
+                                <option selected disabled>  انتخاب زیر منو   </option>';
+            $result_submenu = $link -> query("SELECT * FROM sub_menu");
+            if ($result_submenu->num_rows > 0) {
+                while ($row_submenu = $result_submenu->fetch_assoc()) {
+                    echo '<option value="' . $row_submenu['subm_id'] . '">' . $row_submenu['subm_name'] . '</option>';
+                }
+            }
+
+            echo '      </select>
+                        </div>
+                        <div class="col-auto">
+                            <button name="submit_add" class="btn btn-info text-white me-2" title="ثبت">
+                                <i class="fa-solid fa-plus me-2"></i>
+                                ثبت
+                            </button>
+                        </div>
+                    </form>
+                </td>';
+            echo '<td class="d-flex align-content-center py-2"></td>';
+            echo '</tr>';
             while($rowcategory=$resultcategory -> fetch_assoc()){
                 echo '<tr id="row_'.$rowcategory['cat_id'].'">';
                 echo '<td class="px-4 py-2">'.$rowcategory['cat_id'].'</td>';
@@ -120,35 +153,6 @@ $resultcategory = $link -> query("SELECT * FROM category");
                     . '</td>';
                 echo '</tr>';
             }
-            echo '<tr>';
-            echo '<td class="px-4 py-2"></td>';
-            echo '<td class="px-4 py-2">  
-                    <form method="post" action="">  
-                        <div class="col-auto">
-                            <input name="cat_name" class="form-text border-0 p-2 rounded" type="text" value="دسته بندی جدید">  
-                        </div>
-                        <div class="col-auto">
-                        <select name="subm_category" class="form-select rounded mr-2" aria-label="Default select example">  
-                            <option selected disabled>  انتخاب زیر منو   </option>';
-            $result_submenu = $link -> query("SELECT * FROM sub_menu");
-            if ($result_submenu->num_rows > 0) {
-                while ($row_submenu = $result_submenu->fetch_assoc()) {
-                    echo '<option value="' . $row_submenu['subm_id'] . '">' . $row_submenu['subm_name'] . '</option>';
-                }
-            }
-
-            echo '      </select> 
-                        </div>
-                        <div class="col-auto">
-                        <button name="submit_add" class="btn btn-info text-white me-2" title="ثبت">  
-                            <i class="fa-solid fa-plus me-2"></i>  
-                            ثبت  
-                        </button>  
-                        </div>
-                    </form>  
-                  </td>';
-            echo '<td class="d-flex align-content-center py-2"></td>';
-            echo '</tr>';
             ?>
             </tbody>
         </table>

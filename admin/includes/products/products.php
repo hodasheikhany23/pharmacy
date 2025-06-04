@@ -14,8 +14,8 @@ if(!in_array('4',$perm) && !in_array('5',$perm) && !in_array('6',$perm)) {
                 require_once "admin/includes/products/update.php";
                 break;
             case 'delete':
-                $link->query("DELETE FROM drogs WHERE drg_id = '" . $_GET['id'] . "'");
-                if ($link->errno > 0 || $link->affected_rows == 0) {
+                $link->query("DELETE FROM drogs WHERE drg_id = '" . clean_id($_GET['id']) . "'");
+                if ($link->affected_rows == 0) {
                     $errors['delete'] = "محصول مورد نظر در سامانه موجود نیست!";
                 }
                 else if ($link->affected_rows == 1) {
@@ -23,6 +23,9 @@ if(!in_array('4',$perm) && !in_array('5',$perm) && !in_array('6',$perm)) {
                 }
                 else if ($link->errno == 1451) {
                     $errors['delete'] = "خطا در حذف محصول: اطلاعات وابسته به محصول در سامانه موجود است";
+                }
+                else{
+                    $errors['delete'] = "خطا در حذف محصول";
                 }
                 break;
         }

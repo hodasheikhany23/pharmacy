@@ -13,7 +13,7 @@ if(!in_array('15',$perm)) {
                 require_once "includes/off/update.php";
                 break;
             case 'delete':
-                $result =  $link->query("DELETE FROM off WHERE `off`.`off_id` = '".$_GET['id']."'");
+                $result =  $link->query("DELETE FROM off WHERE `off`.`off_id` = '".clean_id($_GET['id'])."'");
                 if ($link->affected_rows == 1 && $link->errno==0) {
                     $errors['success_delete'] = "تخفیف با موفقیت حذف شد";
                 }

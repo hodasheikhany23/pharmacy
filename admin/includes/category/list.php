@@ -26,7 +26,7 @@ if(isset($_POST['submit_add'])){
 if(isset($_GET['action'])){
     switch($_GET['action']){
         case "delete":
-            $result = $link -> query("DELETE FROM category WHERE cat_id = '".$_GET['id']."'");
+            $result = $link -> query("DELETE FROM category WHERE cat_id = '".clean_id($_GET['id'])."'");
             if($link -> errno == 0){
                 $errors['delete_category'] = "منو با موفقیت حذف شد";
             }

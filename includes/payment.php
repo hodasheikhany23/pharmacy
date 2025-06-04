@@ -36,63 +36,63 @@ else{
         $_SESSION['total_price'] = (int)$total_price;
         $_SESSION['factor_id'] = $row_factor['fac_id'];
     }
+    if(!isset($errors['empty'])){
+        if(isset($_POST['submit']) && $_POST['payment_method'] == '1'){
+            $merchant_id = "9c12975a-beee-4b02-bcec-03557fe7dd7a";
+            $callback_url = "http://localhost:8080/pharmacy/index.php?pg=verify";
+            $description = "پرداخت سفارش شماره " . $row_factor['fac_id'];
+            $data = [
+                'merchant_id' => $merchant_id,
+                'currency' => "IRT",
+                'amount' => (int)$total_price,
+                'callback_url' => $callback_url,
+                'description' => $description,
+                'metadata' => [
+                    'mobile' => $_SESSION['phone'] ?? '',
+                    'email' => '',
+                ]
+            ];
 
-    if(isset($_POST['submit']) && $_POST['payment_method'] == '1'){
-        $merchant_id = "9c12975a-beee-4b02-bcec-03557fe7dd7a";
-        $callback_url = "http://localhost:8080/pharmacy/index.php?pg=verify";
-        $description = "پرداخت سفارش شماره " . $row_factor['fac_id'];
-        $data = [
-            'merchant_id' => $merchant_id,
-            'currency' => "IRT",
-            'amount' => (int)$total_price,
-            'callback_url' => $callback_url,
-            'description' => $description,
-            'metadata' => [
-                'mobile' => $_SESSION['phone'] ?? '',
-                'email' => '',
-            ]
-        ];
+            $ch = curl_init('https://sandbox.zarinpal.com/pg/v4/payment/request.json');
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Content-Type: application/json',
+                'Accept: application/json'
+            ]);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 
-        $ch = curl_init('https://sandbox.zarinpal.com/pg/v4/payment/request.json');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/json',
-            'Accept: application/json'
-        ]);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            $response = curl_exec($ch);
+            $err = curl_error($ch);
+            curl_close($ch);
 
-        $response = curl_exec($ch);
-        $err = curl_error($ch);
-        curl_close($ch);
+            if($err) {
+                die("خطای cURL: " . $err);
+            }
 
-        if($err) {
-            die("خطای cURL: " . $err);
+
+            $result = json_decode($response, true);
+            if(json_last_error() !== JSON_ERROR_NONE) {
+                die("خطا در تفسیر پاسخ JSON: " . json_last_error_msg());
+            }
+            if($err) {
+                $errors['payment'] = "خطا در ارتباط با درگاه پرداخت: " . $err;
+            }
+            elseif(empty($result['data']['code'])) {
+                $errors['payment'] = "پاسخ نامعتبر از درگاه پرداخت";
+            }
+            ob_end_clean();
+            if($result['data']['code'] == 100) {
+                $authority = $result['data']['authority'];
+                echo '<script>window.location.href="https://sandbox.zarinpal.com/pg/StartPay/'.$result['data']['authority'].'";</script>';
+                exit();
+
+            }
+            else {
+               echo "خطا در ایجاد تراکنش: کد خطا " . $result['data']['code'];
+            }
         }
-
-
-        $result = json_decode($response, true);
-        if(json_last_error() !== JSON_ERROR_NONE) {
-            die("خطا در تفسیر پاسخ JSON: " . json_last_error_msg());
-        }
-        if($err) {
-            $errors['payment'] = "خطا در ارتباط با درگاه پرداخت: " . $err;
-        }
-        elseif(empty($result['data']['code'])) {
-            $errors['payment'] = "پاسخ نامعتبر از درگاه پرداخت";
-        }
-        ob_end_clean();
-        if($result['data']['code'] == 100) {
-            $authority = $result['data']['authority'];
-            echo '<script>window.location.href="https://sandbox.zarinpal.com/pg/StartPay/'.$result['data']['authority'].'";</script>';
-            exit();
-
-        }
-        else {
-           echo "خطا در ایجاد تراکنش: کد خطا " . $result['data']['code'];
-        }
-    }
 
     //        require_once "time/jdf.php";
 //        $time = jdate("Y-m-d H:i:s");
@@ -247,4 +247,9 @@ else{
 </body>
 <?php
 }
+    else{
+        echo '<div class="card border-0 p-5 mb-5">هیچ محصولی در سبد خرید نیست</div>';
+    }
+}
+
 ?>

@@ -10,7 +10,7 @@ if(!in_array('15',$perm)) {
 $errors = [];
 if(isset($_POST['update'])){
     $is_active = isset($_POST['is_active']) ? 1 : 2;
-    $updateResult = $link -> query("UPDATE off SET off_name = '" . $_POST['name']  . "',off_value = '" . $_POST['value']  . "' ,off_category_id = '" . $_POST['menu']  . "' ,off_status = '" . $is_active  . "' where off_id = '".$_GET['id']."' ");
+    $updateResult = $link -> query("UPDATE off SET off_name = '" . clean_data($_POST['name'])  . "',off_value = '" . clean_data($_POST['value'])  . "' ,off_category_id = '" . $_POST['menu']  . "' ,off_status = '" . $is_active  . "' where off_id = '".$_GET['id']."' ");
     if($link -> errno == 0){
         $errors['update_user'] = "تخفیف با موفقیت ویرایش شد";
     }

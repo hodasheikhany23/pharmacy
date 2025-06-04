@@ -116,7 +116,7 @@
                                         <div class="top-rated-product-item clearfix">
                                             <div class="top-rated-product-img">
                                                 <?php
-                                                echo '<a href="product-details.html">
+                                                echo '<a href="index.php?md=44&pd=33&p='.$row_drogs['drg_id'].'">
                                     <img style="width: 70px !important; height: 70px !important;" src="uploads/'.$row_drogs['drg_image'].'" alt="#">
                                 </a>';
                                                 ?>
@@ -138,7 +138,7 @@
                                                         ?>
                                                     </ul>
                                                 </div>
-                                                <h6><a href="product-details.html"><?php echo $row_drogs['drg_name'];?></a></h6>
+                                                <h6><a href="index.php?md=44&pd=33&p=<?php echo $row_drogs['drg_id'];?>"><?php echo $row_drogs['drg_name'];?></a></h6>
                                                 <div class="product-price">
                                                     <?php
                                                     $result_off = $link ->query("SELECT * FROM off where off_category_id = '".$row_drogs['drg_category_id']."'");
