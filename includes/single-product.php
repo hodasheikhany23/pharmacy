@@ -80,7 +80,7 @@ if(isset($_POST['add_to_cart'])){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> pharmacy | home </title>
+    <title> cosmetics | home </title>
     <link rel="stylesheet" href="style/style.css">
     <link rel="stylesheet" href="fonts/fonts.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">

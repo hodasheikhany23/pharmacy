@@ -2,6 +2,7 @@
 session_start();
 require_once '../time/jdf.php';
 $link = new mysqli("localhost", "root", "", "pharmacy_db");
+
 if(isset($_POST['id'])){
     if(!isset($_SESSION['user_id'])){
         echo json_encode(['success' => false, 'message' => ' لطفا وارد حساب کاربری خود شوید ']);}

@@ -1,5 +1,6 @@
 <?php
 $conn = new mysqli("localhost", "root", "", "pharmacy_db");
+
 if ($conn->connect_error) {
     echo json_encode(['success' => false, 'error' => $conn->connect_error]);
     exit;

@@ -1,6 +1,7 @@
 <?php
 session_start();
 $link = new mysqli("localhost", "root", "", "pharmacy_db");
+
 require_once "../../time/jdf.php";
 function dateFormat($value){
     $value=jdate('d F Y',$value);

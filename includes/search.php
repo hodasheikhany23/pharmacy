@@ -1,6 +1,7 @@
 <?php
 $link = new mysqli("localhost", "root", "", "pharmacy_db");
 
+
 if (isset($_POST['search'])) {
     $search = $_POST['search'];
 } else {

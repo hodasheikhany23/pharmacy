@@ -1,5 +1,4 @@
 ﻿<?php
-require_once 'includes/header.php';
 require_once 'includes/connect.php';
 $error = [];
 if (isset($_POST['submit'])) {
@@ -58,7 +57,7 @@ if (isset($_POST['submit'])) {
             $error['picFile']= (isset($error['picFile'])? $error['picFile']."<br>":"").'<div class="alert" role="alert">' . 'حجم فایل بیشتر از حد مجاز است' . ' </div>';
         }
         if(!isset($error['picFile'])) {
-            $fileName = date("YmdHis") . "pharmacy" .$pictureExtention;
+            $fileName = date("YmdHis") . "cosmetics" .$pictureExtention;
             move_uploaded_file($_FILES['picFile']['tmp_name'], "uploads/" . $fileName);
         }
     }
@@ -193,12 +192,14 @@ if (isset($_POST['submit'])) {
                                     ?>
                                 </div>
                                 <div class="form-group">
-                                    <input type="password" name="password" class="form-control mb-2"
+                                    <input style="position: relative;" id="pass" type="password" name="password" class="form-control mb-2"
                                            placeholder="رمز عبور*" value="<?php
                                     if (isset($_POST['password'])) {
                                         echo $_POST['password'];
                                     }
                                     ?>">
+                                    <span id="togglePassword" class="toggle-password" title="نمایش/مخفی کردن رمز عبور" style="position: absolute; top: 65px; left: 32px;"><i class="bi bi-eye"></i></span>
+
                                     <?php
                                     if (isset($error['password'])) {
                                         echo $error['password'];
@@ -263,3 +264,67 @@ if (isset($_POST['submit'])) {
         </div>
     </div>
 </section>
+<script>
+    function clean_data(input) {
+        return input.trim();
+    }
+
+    function validateForm(form) {
+        const errors = {};
+
+        const fName = clean_data(form.fName.value);
+        if (!fName || fName.length < 2) {
+            errors.fName = '<div class="alert" role="alert">نام باید حداقل 2 کاراکتر باشد</div>';
+        }
+
+        const lName = clean_data(form.lName.value);
+        if (!lName || lName.length < 3) {
+            errors.lName = '<div class="alert" role="alert">نام خانوادگی باید حداقل 3 کاراکتر باشد</div>';
+        }
+
+        const username = clean_data(form.username.value);
+        if (!username || username.length < 2) {
+            errors.username = '<div class="alert" role="alert">نام باید حداقل 2 کاراکتر باشد</div>';
+        }
+
+        const phone = clean_data(form.phone.value);
+        if (!phone || phone.length < 10 || isNaN(phone)) {
+            errors.phone = '<div class="alert" role="alert">شماره موبایل باید عددی و 10 رقم باشد</div>';
+        }
+
+        const city = clean_data(form.citySelect.value);
+        if (!city) {
+            errors.citySelect = '<div class="alert" role="alert">لطفا شهر خود را انتخاب کنید</div>';
+        }
+
+        const password = form.password.value;
+        const confirmPassword = form.confirmPassword.value;
+
+        if (!password) {
+            errors.password = '<div class="alert" role="alert">رمز عبور خود را وارد کنید</div>';
+        } else if (!confirmPassword) {
+            errors.confirmPassword = '<div class="alert" role="alert">تکرار رمز عبور را وارد کنید</div>';
+        } else if (password !== confirmPassword) {
+            errors.confirmPassword = '<div class="alert" role="alert">رمز عبور و تکرار آن برابر نیستند</div>';
+        }
+
+        if (!form.iAgree.checked) {
+            errors.checkAgree = '<div class="alert" role="alert">لطفا قوانین را مطالعه و گزینه قبول قوانین را انتخاب کنید</div>';
+        }
+
+        return errors;
+    }
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('pass');
+
+    togglePassword.addEventListener('click', function () {
+        const type = passwordInput.getAttribute('type');
+        if (type === 'password') {
+            passwordInput.setAttribute('type', 'text');
+            togglePassword.innerHTML = '<i class="bi bi-eye-slash"  style="font-size: 16px !important;"></i>';
+        } else {
+            passwordInput.setAttribute('type', 'password');
+            togglePassword.innerHTML = '<i class="bi bi-eye"  style="font-size: 16px !important;"></i>';
+        }
+    });
+</script>

@@ -19,7 +19,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> pharmacy | home </title>
+    <title> cosmetics | home </title>
     <link rel="stylesheet" href="admin/style/style.css">
     <link rel="stylesheet" href="admin/style/admin.css">
     <link href="../fonts/fontawesome-free/css/all.css" rel="stylesheet" type="text/css">

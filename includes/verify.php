@@ -1,5 +1,6 @@
 <?php
 $link = new mysqli("localhost", "root", "", "pharmacy_db");
+
 if ($link===false) {
     echo "Error: Unable to connect to MySQL." . PHP_EOL;
 }

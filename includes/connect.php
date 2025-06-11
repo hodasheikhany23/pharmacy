@@ -2,8 +2,9 @@
     defined('site') or die('Acces denied');
     date_default_timezone_set("Asia/Tehran");
 
-    $link = new mysqli("localhost", "root", "", "pharmacy_db");
-    if ($link===false) {
+$link = new mysqli("localhost", "root", "", "pharmacy_db");
+
+if ($link===false) {
         echo "Error: Unable to connect to MySQL." . PHP_EOL;
     }
     $link->query("set names utf8");

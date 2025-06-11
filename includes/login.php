@@ -86,11 +86,12 @@ if(!isset($_SESSION['username'])){
                                     <input type="text" name="username" class="form-control mb-2" placeholder="نام کاربری" >
                                 </div>
                                 <div class="form-group col-12">
-                                    <input type="password" name="password" class="form-control mb-2" placeholder="رمز عبور">
+                                    <input type="password" name="password" id="pass" class="form-control mb-2" placeholder="رمز عبور" style="position: relative">
+                                    <span id="togglePassword" class="toggle-password" title="نمایش/مخفی کردن رمز عبور" style="position: absolute; top: 12px; left: 32px;"><i class="bi bi-eye"></i></span>
                                 </div>
                                 <div style="display: flex; justify-content: center; flex-direction: column;">
                                     <div style="margin-left: 1em;">
-                                        <button class="button btn btn-primary sign" name="submit"> <i class="bi bi-box-arrow-in-left"></i> <span
+                                        <button class="button btn btn-primary sign" name="submit"> <i class="bi bi-box-arrow-in-left" style="font-size: 16px !important;"></i> <span
                                             style="margin-left: 2px;">| </span>ورود </button>
                                     </div>
                                     <div class="btn btn-link" style="font-size: 12px !important; color: #3C7BBF !important;">
@@ -122,6 +123,44 @@ if(!isset($_SESSION['username'])){
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/script.js"></script>
+    <script>
+        function validateLoginForm(form, loginFailed = false) {
+            const errors = {};
+
+            const username = form.username.value.trim();
+            const password = form.password.value;
+
+            if (!username) {
+                errors.username = "لطفا نام کاربری خود را وارد کنید";
+            }
+
+            if (!password) {
+                errors.password = "لطفا رمز عبور خود را وارد کنید";
+            }
+
+            if (loginFailed && username && password) {
+                errors.login_failed = "نام کاربری یا رمز عبور اشتباه است";
+            }
+
+            return errors;
+        }
+
+
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('pass');
+
+        togglePassword.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type');
+            if (type === 'password') {
+                passwordInput.setAttribute('type', 'text');
+                togglePassword.innerHTML = '<i class="bi bi-eye-slash"  style="font-size: 16px !important;"></i>';
+            } else {
+                passwordInput.setAttribute('type', 'password');
+                togglePassword.innerHTML = '<i class="bi bi-eye"  style="font-size: 16px !important;"></i>';
+            }
+        });
+    </script>
+
     <?php
     }
     ?>

@@ -13063,7 +13063,7 @@ mortar-pestle:
       - grind
       - medical
       - mix
-      - pharmacy
+      - cosmetics
       - prescription
       - spices
   styles:
@@ -14812,7 +14812,7 @@ prescription:
       - drugs
       - medical
       - medicine
-      - pharmacy
+      - cosmetics
       - rx
   styles:
     - solid
@@ -14827,7 +14827,7 @@ prescription-bottle:
       - drugs
       - medical
       - medicine
-      - pharmacy
+      - cosmetics
       - rx
   styles:
     - solid
@@ -14842,7 +14842,7 @@ prescription-bottle-alt:
       - drugs
       - medical
       - medicine
-      - pharmacy
+      - cosmetics
       - rx
   styles:
     - solid

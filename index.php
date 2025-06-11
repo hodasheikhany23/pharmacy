@@ -14,10 +14,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> pharmacy | home </title>
+    <title> cosmetics | home </title>
     <link rel="stylesheet" href="style/style.css">
     <link rel="stylesheet" href="style/style2.css">
     <link rel="stylesheet" href="fonts/fonts.css">
+    <link rel="stylesheet" href="includes/header/styles/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.rtl.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -33,7 +34,7 @@
             require_once "profile/index.php";
     }
     else{
-        require_once 'includes/header.php';
+        require_once 'includes/header/header.php';
 
         if(isset($_GET['md'])){
             if(isset($_GET['pd'])){
@@ -568,6 +569,8 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/script.js"></script>
+    <script src="includes/header/js/header.js"></script>
+
 
 </body>
 

@@ -1948,7 +1948,7 @@ payments-shopping:
     - thumbs-up
     - trophy
   label: Payments & Shopping
-pharmacy:
+cosmetics:
   icons:
     - band-aid
     - book-medical
@@ -1977,7 +1977,7 @@ pharmacy:
     - thermometer
     - vial
     - vials
-  label: Pharmacy
+  label: cosmetics
 political:
   icons:
     - award

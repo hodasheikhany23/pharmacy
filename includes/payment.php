@@ -39,7 +39,7 @@ else{
     if(!isset($errors['empty'])){
         if(isset($_POST['submit']) && $_POST['payment_method'] == '1'){
             $merchant_id = "9c12975a-beee-4b02-bcec-03557fe7dd7a";
-            $callback_url = "http://localhost:8080/pharmacy/index.php?pg=verify";
+            $callback_url = "http://localhost:8080/cosmetics/index.php?pg=verify";
             $description = "پرداخت سفارش شماره " . $row_factor['fac_id'];
             $data = [
                 'merchant_id' => $merchant_id,
